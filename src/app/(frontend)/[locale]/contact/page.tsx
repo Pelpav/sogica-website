@@ -18,10 +18,10 @@ export default async function ContactPage({ params }: Props) {
           <h1 className="mt-2 text-4xl">{locale === 'fr' ? 'Parlons de votre projet' : 'Let\'s discuss your project'}</h1>
           {site?.address && <p className="mt-6 whitespace-pre-line text-[var(--color-muted-foreground)]">{site.address}</p>}
           <ul className="mt-6 space-y-2 text-sm">
-            {site?.phones?.map((p, i) => (
+            {site?.phones?.map((p: { number: string }, i: number) => (
               <li key={i}><a href={`tel:${p.number}`} className="hover:text-[var(--color-primary)]">{p.number}</a></li>
             ))}
-            {site?.emails?.map((e, i) => (
+            {site?.emails?.map((e: { address: string }, i: number) => (
               <li key={i}><a href={`mailto:${e.address}`} className="hover:text-[var(--color-primary)]">{e.address}</a></li>
             ))}
           </ul>
