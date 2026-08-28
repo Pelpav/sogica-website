@@ -41,5 +41,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  --motion-intensity: 0;
+  :root {
+    --motion-intensity: 0;
+  }
 }
