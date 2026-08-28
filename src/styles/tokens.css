@@ -1,0 +1,45 @@
+:root {
+  --color-primary: #f00080;
+  --color-secondary: #111111;
+  --color-accent: #d4af37;
+  --color-background: #fafafa;
+  --color-foreground: #111111;
+  --color-muted: #f3f3f3;
+  --color-muted-foreground: #666666;
+  --color-border: #e5e5e5;
+  --color-destructive: #dc2626;
+
+  --font-heading: var(--font-barlow), 'Barlow Condensed', system-ui, sans-serif;
+  --font-body: var(--font-source), 'Source Sans 3', system-ui, sans-serif;
+
+  --container-max: 1280px;
+  --section-spacing: 5rem;
+  --radius-base: 0px;
+  --motion-intensity: 1;
+
+  --header-height: 4.5rem;
+}
+
+[data-section-spacing='compact'] {
+  --section-spacing: 3.5rem;
+}
+
+[data-section-spacing='relaxed'] {
+  --section-spacing: 6.5rem;
+}
+
+[data-radius='soft'] {
+  --radius-base: 4px;
+}
+
+[data-radius='round'] {
+  --radius-base: 8px;
+}
+
+[data-motion='none'] {
+  --motion-intensity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  --motion-intensity: 0;
+}

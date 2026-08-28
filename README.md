@@ -1,34 +1,102 @@
-# SOGICA Cursor Pack
+# SOGICA SA — Site officiel
 
-This pack contains:
-- `CURSOR_MASTER_PROMPT.md`
-- project-specific Cursor skills in `.cursor/skills/`
+Site corporate production-ready pour **SOGICA SA** : Next.js 15 App Router, Payload CMS 3, Neon PostgreSQL, Cloudflare R2.
 
-## Install the custom skills
+## Prérequis
 
-From the project root, copy the `.cursor` folder from this pack into the repository root.
+- Node.js ≥ 20.9
+- pnpm ≥ 9
+- PostgreSQL (Neon en production)
+- Cloudflare R2 (production media)
 
-Cursor discovers project skills in `.cursor/skills/` (and also supports `.agents/skills/`).
-
-## Recommended external skills
-
-Run from the SOGICA project root:
+## Démarrage local
 
 ```bash
-npx skills@latest add vercel-labs/agent-skills --skill vercel-react-best-practices --skill vercel-composition-patterns --skill web-design-guidelines --agent cursor -y
+cp .env.example .env
+# Configurer DATABASE_URL et PAYLOAD_SECRET
 
-npx skills@latest add vercel/next.js --agent cursor -y
-
-npx skills@latest add neondatabase/agent-skills --skill neon --skill neon-postgres --skill neon-postgres-branches --agent cursor -y
+pnpm install
+pnpm dev
 ```
 
-Also install the Neon plugin from Cursor's Customize / Marketplace if you want Cursor to have live Neon project tooling.
+Site : http://localhost:3000/fr  
+Admin : http://localhost:3000/admin
 
-## Workflow
+### Base de données locale (exemple)
 
-1. Put the supplied SOGICA documents, logo assets, photos and videos somewhere Cursor can inspect.
-2. Install the external skills above.
-3. Copy the custom skills into the repo.
-4. Open `CURSOR_MASTER_PROMPT.md` and paste it into a fresh Cursor Agent session.
-5. Give the Agent access to the relevant media/document folders.
-6. Let it implement phase by phase, reviewing commits as you go.
+```bash
+# PostgreSQL local
+DATABASE_URL=postgresql://sogica:sogica@localhost:5432/sogica
+USE_LOCAL_MEDIA=true
+```
+
+### Seed
+
+```bash
+pnpm seed
+```
+
+Crée : admin, expertises, équipements, références, pages, médias non assignés depuis `_source/`. **Aucun projet inventé.**
+
+Identifiants seed : `admin@sogica.ml` / `ChangeMe-Sogica-2026!`
+
+## Scripts
+
+| Commande | Description |
+|----------|-------------|
+| `pnpm dev` | Dev server |
+| `pnpm build` | Build production |
+| `pnpm seed` | Seed idempotent |
+| `pnpm migrate` | Migrations Postgres |
+| `pnpm generate:types` | Types Payload |
+| `pnpm test` | Tests Vitest |
+| `pnpm quality-gate` | typecheck + lint + test + build |
+
+## Neon (production)
+
+1. Créer un projet Neon
+2. Copier `DATABASE_URL` (pooler) et `DATABASE_URL_UNPOOLED` (migrations)
+3. `pnpm migrate` avant deploy
+
+## Cloudflare R2
+
+1. Créer bucket public + bucket privé (`R2_PRIVATE_BUCKET`)
+2. Configurer CORS pour uploads directs :
+
+```json
+[
+  {
+    "AllowedOrigins": ["https://votredomaine.com"],
+    "AllowedMethods": ["GET", "PUT", "POST"],
+    "AllowedHeaders": ["*"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+3. Variables : voir `.env.example`
+4. Désactiver `USE_LOCAL_MEDIA` en production
+
+## Déploiement Vercel
+
+- Framework : Next.js
+- Build : `pnpm build`
+- Variables d'environnement : toutes celles de `.env.example`
+- `DATABASE_URL`, `PAYLOAD_SECRET`, R2 requis
+
+Voir `docs/deployment.md`.
+
+## Intégrité contenu
+
+- Photos WhatsApp = médias **non assignés**, pas de projets inventés
+- Réalisations vides jusqu'à saisie éditoriale attestée
+- Pas de lorem ipsum publié
+
+## Documentation
+
+- `docs/architecture.md`
+- `docs/cms-guide.md`
+- `docs/content-model.md`
+- `docs/media-pipeline.md`
+- `docs/media-inventory.md`
+- `docs/deployment.md`
