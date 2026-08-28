@@ -1,0 +1,38 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# next.js
+.next
+out
+
+# payload
+src/payload-types.ts
+src/app/(payload)/admin/importMap.js
+
+# env
+.env
+.env.local
+.env.*.local
+
+# media (never commit customer uploads)
+public/media/uploads
+media-cache
+
+# debug
+npm-debug.log*
+pnpm-debug.log*
+
+# IDE
+.idea
+.vscode
+
+# test
+test-results
+playwright-report
+coverage
+
+# misc
+.DS_Store
+*.pem
+.vercel
