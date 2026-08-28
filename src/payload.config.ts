@@ -34,7 +34,7 @@ function resolveDatabaseURL(): string {
   const isCodegen =
     lifecycle === 'generate:importmap' || lifecycle === 'generate:types';
 
-  if (isCodegen) {
+  if (isCodegen || (process.env.VERCEL === '1' && !process.env.DATABASE_URL)) {
     return 'postgresql://build:build@127.0.0.1:5432/build?sslmode=disable';
   }
 
