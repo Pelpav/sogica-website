@@ -24,11 +24,24 @@ import { getStoragePlugins } from './lib/storage';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-const databaseURL = process.env.DATABASE_URL;
+/** Payload codegen and Vercel builds load this file without opening a DB connection. */
+function resolveDatabaseURL(): string {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL;
+  }
 
-if (!databaseURL) {
+  const lifecycle = process.env.npm_lifecycle_event;
+  const isCodegen =
+    lifecycle === 'generate:importmap' || lifecycle === 'generate:types';
+
+  if (isCodegen || process.env.VERCEL === '1') {
+    return 'postgresql://build:build@127.0.0.1:5432/build?sslmode=disable';
+  }
+
   throw new Error('DATABASE_URL is required');
 }
+
+const databaseURL = resolveDatabaseURL();
 
 export default buildConfig({
   admin: {
