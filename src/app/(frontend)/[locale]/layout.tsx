@@ -7,7 +7,8 @@ import { SitePreloader } from '@/components/theme/SitePreloader'
 import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
 import { PageTransitionShell } from '@/components/theme/PageTransitionShell'
 import { MotionProvider } from '@/components/motion/MotionProvider'
-import { MotionScrollEnhancer } from '@/components/motion/MotionScrollEnhancer'
+import { MotionScrollEnhancerLazy } from '@/components/motion/MotionScrollEnhancerLazy'
+import { MediaPreconnect } from '@/components/seo/MediaPreconnect'
 import {
   LocaleFooterSlot,
   LocaleHeaderFallback,
@@ -79,6 +80,9 @@ async function LocaleLayoutShell({ children, params }: LayoutProps) {
 
   return (
     <html lang={locale} className={fontClasses} data-scroll-behavior="smooth">
+      <head>
+        <MediaPreconnect />
+      </head>
       <body>
         <Suspense fallback={null}>
           <InstantNavigation />
@@ -88,7 +92,7 @@ async function LocaleLayoutShell({ children, params }: LayoutProps) {
         </Suspense>
         <SitePreloader />
         <MotionProvider>
-          <MotionScrollEnhancer />
+          <MotionScrollEnhancerLazy />
         <RefreshRouteOnSave />
         <Suspense fallback={null}>
           <LocaleJsonLdSlot params={params} />

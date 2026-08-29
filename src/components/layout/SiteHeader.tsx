@@ -116,7 +116,7 @@ export function SiteHeaderView({
             />
           </SiteLink>
 
-          <nav className="site-header__nav" aria-label="Main">
+          <nav className="site-header__nav" aria-label={locale === 'fr' ? 'Navigation principale' : 'Main navigation'}>
             {navItems.map((item) => (
               <SiteLink
                 key={item.url}
@@ -194,9 +194,10 @@ export function SiteHeaderView({
         </div>
       </div>
 
-      <div className={`site-header__mobile ${open ? 'is-open' : ''}`} id="mobile-nav" aria-hidden={!open}>
+      {open ? (
+        <div className="site-header__mobile is-open" id="mobile-nav">
         <div className="site-header__mobile-backdrop" onClick={() => setOpen(false)} aria-hidden />
-        <nav className="site-header__mobile-panel" aria-label="Mobile">
+        <nav className="site-header__mobile-panel" aria-label={locale === 'fr' ? 'Navigation mobile' : 'Mobile navigation'}>
           <div className="site-header__mobile-head">
             <span className="site-header__mobile-label">{locale === 'fr' ? 'Menu' : 'Menu'}</span>
             <button
@@ -267,7 +268,8 @@ export function SiteHeaderView({
             </div>
           </div>
         </nav>
-      </div>
+        </div>
+      ) : null}
     </header>
   )
 }

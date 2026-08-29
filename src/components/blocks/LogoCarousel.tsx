@@ -15,7 +15,7 @@ export function LogoCarousel({ items }: { items: LogoCarouselItem[] }) {
   const loop = [...items, ...items]
 
   return (
-    <div className="logo-carousel" aria-label="Partenaires et références">
+    <section className="logo-carousel" aria-label="Partenaires et références">
       <div className="logo-carousel__track">
         {loop.map((item, index) => {
           const image = (
@@ -25,6 +25,7 @@ export function LogoCarousel({ items }: { items: LogoCarouselItem[] }) {
               width={200}
               height={80}
               sizes="(max-width: 768px) 40vw, 200px"
+              quality={70}
               className="logo-carousel__img"
               unoptimized={item.src.endsWith('.svg')}
             />
@@ -43,6 +44,6 @@ export function LogoCarousel({ items }: { items: LogoCarouselItem[] }) {
           )
         })}
       </div>
-    </div>
+    </section>
   )
 }

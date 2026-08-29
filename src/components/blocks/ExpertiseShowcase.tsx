@@ -29,19 +29,20 @@ export function ExpertiseShowcase({
 
   if (!items.length) return null
 
+  const listLabel = locale === 'fr' ? 'Expertises' : 'Expertise'
+
   return (
     <div className="expertise-showcase">
-      <RevealEach className="expertise-showcase__list" role="tablist" aria-label={locale === 'fr' ? 'Expertises' : 'Expertise'}>
+      <div className="expertise-showcase__list" role="group" aria-label={listLabel}>
         {items.map((item) => {
           const isActive = item.id === active?.id
           return (
             <button
               key={item.id}
               type="button"
-              role="tab"
               className={`expertise-showcase__item ${isActive ? 'is-active' : ''}`}
               onClick={() => setActiveId(item.id)}
-              aria-selected={isActive}
+              aria-pressed={isActive}
             >
               <span className="expertise-showcase__name">{item.name}</span>
               <span className="expertise-showcase__action" aria-hidden>
@@ -50,11 +51,11 @@ export function ExpertiseShowcase({
             </button>
           )
         })}
-      </RevealEach>
+      </div>
 
       {active ? (
         <Reveal key={active.id} variant="right" className="block">
-          <div className="expertise-showcase__panel" role="tabpanel">
+          <div className="expertise-showcase__panel" aria-live="polite">
           <div className="expertise-showcase__media-wrap">
             <div className="expertise-showcase__media">
               {active.cover ? (

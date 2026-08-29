@@ -111,44 +111,44 @@ export function SiteFooter({
                 />
               </SiteLink>
               {site?.companyFullName ? (
-                <p className="mt-3 text-sm leading-relaxed text-white/65">{site.companyFullName}</p>
+                <p className="mt-3 text-sm leading-relaxed text-white/75">{site.companyFullName}</p>
               ) : null}
               {site?.tagline ? (
-                <p className="mt-3 text-sm leading-relaxed text-white/55">{site.tagline}</p>
+                <p className="mt-3 text-sm leading-relaxed text-white/70">{site.tagline}</p>
               ) : null}
               {site?.address ? (
-                <p className="mt-4 text-sm leading-relaxed whitespace-pre-line text-white/55">{site.address}</p>
+                <p className="mt-4 text-sm leading-relaxed whitespace-pre-line text-white/70">{site.address}</p>
               ) : null}
               {socialLinks.length ? (
-                <div className="site-footer__social">
+                <nav className="site-footer__social" aria-label={locale === 'fr' ? 'Réseaux sociaux' : 'Social media'}>
                   {socialLinks.map((link, i) => (
                     <a key={i} href={link.url || '#'} target="_blank" rel="noopener noreferrer">
                       {link.platform || (locale === 'fr' ? 'Réseau' : 'Social')}
                     </a>
                   ))}
-                </div>
+                </nav>
               ) : null}
             </div>
             <div className="grid gap-8 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-4">
               {columns.map((col, i) => (
-                <div key={i}>
+                <nav key={i} aria-label={col.title || (locale === 'fr' ? 'Liens du pied de page' : 'Footer links')}>
                   {col.title ? (
                     <p className="text-xs font-semibold tracking-widest text-[var(--color-accent)] uppercase">{col.title}</p>
                   ) : null}
                   <ul className="mt-4 space-y-2.5">
                     {col.links?.map((link, j) => (
                       <li key={j}>
-                        <SiteLink href={link.url || '#'} className="text-sm text-white/75 transition-colors hover:text-white">
+                        <SiteLink href={link.url || '#'} className="site-footer__link text-sm text-white/80 transition-colors hover:text-white">
                           {link.label}
                         </SiteLink>
                       </li>
                     ))}
                   </ul>
-                </div>
+                </nav>
               ))}
             </div>
           </div>
-          <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
             <p>
               {footer?.copyright ? (
                 footer.copyright

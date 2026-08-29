@@ -32,6 +32,11 @@ export function SitePreloader() {
     setVisible(true)
     document.documentElement.classList.add('preloader-active')
 
+    const header = document.querySelector<HTMLElement>('.site-header')
+    const main = document.getElementById('main')
+    if (header) header.inert = true
+    if (main) main.inert = true
+
     if (mobile) {
       setVideoFailed(true)
     }
@@ -66,6 +71,11 @@ export function SitePreloader() {
       setExiting(true)
       sessionStorage.setItem(STORAGE_KEY, '1')
       document.documentElement.classList.remove('preloader-active')
+
+      const header = document.querySelector<HTMLElement>('.site-header')
+      const main = document.getElementById('main')
+      if (header) header.inert = false
+      if (main) main.inert = false
 
       window.setTimeout(() => {
         setVisible(false)

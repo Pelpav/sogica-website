@@ -1,5 +1,6 @@
 'use client'
 
+import { scheduleIdleWork } from '@/lib/idle'
 import { isLegalRoute } from '@/lib/motion-config'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
@@ -31,7 +32,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   const enabled = !isLegalRoute(pathname)
 
   useEffect(() => {
-    setMounted(true)
+    return scheduleIdleWork(() => setMounted(true), { timeout: 1800, fallbackMs: 400 })
   }, [])
 
   return <MotionContext.Provider value={{ enabled, mounted }}>{children}</MotionContext.Provider>

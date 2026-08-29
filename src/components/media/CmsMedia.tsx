@@ -9,6 +9,7 @@ export function CmsImage({
   priority = false,
   fill = false,
   sizes = '(max-width: 768px) 100vw, 50vw',
+  quality,
 }: {
   media: MediaType | string | number | null | undefined
   alt?: string
@@ -16,11 +17,13 @@ export function CmsImage({
   priority?: boolean
   fill?: boolean
   sizes?: string
+  quality?: number
 }) {
   const url = getMediaUrl(media as MediaType)
   if (!url) return null
 
   const resolvedAlt = alt ?? getMediaAlt(media as MediaType, '')
+  const imageQuality = quality ?? (priority ? 75 : 60)
 
   if (fill) {
     return (
@@ -30,6 +33,7 @@ export function CmsImage({
         fill
         className={`object-cover ${className}`}
         sizes={sizes}
+        quality={imageQuality}
         priority={priority}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
@@ -48,6 +52,7 @@ export function CmsImage({
       height={h}
       className={`h-auto w-full ${className}`}
       sizes={sizes}
+      quality={imageQuality}
       priority={priority}
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}

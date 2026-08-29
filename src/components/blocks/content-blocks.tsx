@@ -90,6 +90,7 @@ export function HeroBlock({
               priority={priority}
               loading="eager"
               fetchPriority={priority ? 'high' : 'auto'}
+              quality={75}
               className="h-full w-full object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
@@ -132,6 +133,7 @@ export function HeroBlock({
             priority={priority}
             loading="eager"
             fetchPriority={priority ? 'high' : 'auto'}
+            quality={75}
             className="object-cover"
             sizes="100vw"
           />
@@ -143,6 +145,7 @@ export function HeroBlock({
             priority={priority}
             loading="eager"
             fetchPriority={priority ? 'high' : 'auto'}
+            quality={75}
             className="object-cover"
             sizes="100vw"
           />
@@ -615,8 +618,13 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
   }
 
   return (
-    <section className="section-block" data-tone="muted">
+    <section className="section-block" data-tone="muted" aria-labelledby={txt(block.title) ? 'timeline-title' : undefined}>
       <div className="container-site max-w-2xl">
+        {txt(block.title) ? (
+          <h2 id="timeline-title" className="section-title mb-8">
+            {txt(block.title)}
+          </h2>
+        ) : null}
         <RevealEach as="ol" className="space-y-6">
           {items.map((item, i) => (
             <li key={i} className="card-flat p-6">
@@ -696,9 +704,9 @@ export function FaqBlock({ block, locale }: { block: PageBlock; locale: Locale }
           ) : null}
           <div className="faq-section__support-card">
             <p className="eyebrow">{locale === 'fr' ? 'Support' : 'Support'}</p>
-            <h3 className="section-title mt-3 text-xl">
+            <p className="section-title mt-3 text-xl">
               {locale === 'fr' ? 'Une question sur votre projet ?' : 'Questions about your project?'}
-            </h3>
+            </p>
             {phone ? (
               <a href={`tel:${phone.replace(/\s/g, '')}`} className="btn btn-primary mt-6">
                 {locale === 'fr' ? 'Appeler' : 'Call now'}

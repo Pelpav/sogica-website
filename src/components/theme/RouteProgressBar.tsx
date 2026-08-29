@@ -79,7 +79,7 @@ export function RouteProgressBar() {
   if (state === 'idle' && progress === 0) return null
 
   return (
-    <div className="route-progress" role="progressbar" aria-hidden aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
+    <div className="route-progress" aria-hidden="true">
       <span
         className={`route-progress__bar route-progress__bar--${state}`}
         style={{ transform: `scaleX(${progress / 100})` }}

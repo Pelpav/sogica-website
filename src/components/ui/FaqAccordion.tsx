@@ -37,7 +37,6 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
             </button>
             <div
               id={panelId}
-              role="region"
               aria-labelledby={buttonId}
               className="faq-accordion__panel"
               hidden={!isOpen}

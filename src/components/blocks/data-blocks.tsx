@@ -419,9 +419,9 @@ async function ClientsInner({ block, locale }: { block: PageBlock; locale: Local
     <section className="sogica-section sogica-section--tight-top trusted-by-section" id="trusted">
       <div className="container-site">
         <Reveal variant="fade">
-          <p className="trusted-by__label">
+          <h2 className="trusted-by__label">
             {txt(block.title) || (locale === 'fr' ? 'Ils nous font confiance' : 'Trusted by')}
-          </p>
+          </h2>
         </Reveal>
         {items.length ? (
           <Reveal variant="up" className="mt-6 block">
