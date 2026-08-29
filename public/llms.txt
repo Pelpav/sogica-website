@@ -1,0 +1,40 @@
+# SOGICA SA — Site officiel
+
+> SOGICA SA est une entreprise malienne de BTP (génie civil, construction métallique, équipements de contrôle routier). Ce site présente l'activité, les expertises, les réalisations et les formulaires de contact/devis en français et en anglais.
+
+## Pages principales (FR)
+
+- [Accueil](https://www.sogica.ml/fr)
+- [À propos](https://www.sogica.ml/fr/a-propos)
+- [Expertises](https://www.sogica.ml/fr/expertises)
+- [Réalisations](https://www.sogica.ml/fr/realisations)
+- [Clients & partenaires](https://www.sogica.ml/fr/clients-partenaires)
+- [Contact](https://www.sogica.ml/fr/contact)
+- [Demande de devis](https://www.sogica.ml/fr/demande-de-devis)
+- [Mentions légales](https://www.sogica.ml/fr/mentions-legales)
+- [Confidentialité](https://www.sogica.ml/fr/confidentialite)
+
+## Main pages (EN)
+
+- [Home](https://www.sogica.ml/en)
+- [About](https://www.sogica.ml/en/about)
+- [Expertise](https://www.sogica.ml/en/expertise)
+- [Projects](https://www.sogica.ml/en/projects)
+- [Clients & partners](https://www.sogica.ml/en/clients-partners)
+- [Contact](https://www.sogica.ml/en/contact)
+- [Request a quote](https://www.sogica.ml/en/request-quote)
+- [Legal notice](https://www.sogica.ml/en/legal-notice)
+- [Privacy](https://www.sogica.ml/en/privacy)
+
+## Ressources techniques
+
+- [Plan du site](https://www.sogica.ml/sitemap.xml)
+- [Robots](https://www.sogica.ml/robots.txt)
+
+## Contenu éditorial
+
+Le contenu public est géré via Payload CMS (`/admin`). Les réalisations et statistiques publiées reflètent des données attestées — ne pas inventer de projets, clients ou chiffres non présents sur le site.
+
+## Contact
+
+Coordonnées et formulaires disponibles sur les pages [Contact FR](https://www.sogica.ml/fr/contact) et [Contact EN](https://www.sogica.ml/en/contact).

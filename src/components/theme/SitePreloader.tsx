@@ -1,7 +1,8 @@
 'use client'
 
+import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BRAND_LOGO_PATH, SITE_PRELOADER_PATH } from '@/lib/media-filenames'
+import { BRAND_LOGO_UI_PATH, SITE_PRELOADER_PATH } from '@/lib/media-filenames'
 
 const STORAGE_KEY = 'sogica-preloader-v3'
 const MIN_MS = 1800
@@ -21,6 +22,7 @@ export function SitePreloader() {
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const mobile = window.matchMedia('(max-width: 768px)').matches
     if (reduceMotion || sessionStorage.getItem(STORAGE_KEY) === '1') {
       setDone(true)
       return
@@ -29,6 +31,10 @@ export function SitePreloader() {
     startedAt.current = Date.now()
     setVisible(true)
     document.documentElement.classList.add('preloader-active')
+
+    if (mobile) {
+      setVideoFailed(true)
+    }
 
     const enterTimer = window.setTimeout(() => setEntered(true), 40)
     return () => window.clearTimeout(enterTimer)
@@ -116,6 +122,12 @@ export function SitePreloader() {
     }
   }, [visible, finish, videoFailed])
 
+  useEffect(() => {
+    if (!visible || !videoFailed) return
+    const timer = window.setTimeout(finish, MIN_MS)
+    return () => window.clearTimeout(timer)
+  }, [visible, videoFailed, finish])
+
   if (done || !visible) return null
 
   return (
@@ -135,18 +147,24 @@ export function SitePreloader() {
 
       <div className="site-preloader__frame">
         {videoFailed ? (
-          <img
+          <Image
             className="site-preloader__video site-preloader__fallback"
-            src={BRAND_LOGO_PATH}
+            src={BRAND_LOGO_UI_PATH}
             alt="SOGICA"
+            width={220}
+            height={72}
+            priority
           />
         ) : (
           <>
             {!videoPlaying ? (
-              <img
+              <Image
                 className="site-preloader__video site-preloader__fallback"
-                src={BRAND_LOGO_PATH}
+                src={BRAND_LOGO_UI_PATH}
                 alt=""
+                width={220}
+                height={72}
+                priority
                 aria-hidden
               />
             ) : null}
@@ -157,7 +175,7 @@ export function SitePreloader() {
               muted
               autoPlay
               playsInline
-              preload="auto"
+              preload="metadata"
               disablePictureInPicture
               onEnded={finish}
               onError={() => {

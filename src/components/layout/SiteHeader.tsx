@@ -8,7 +8,7 @@ import type { Header as HeaderType, SiteSetting } from '@/payload-types'
 import type { Locale } from '@/lib/i18n'
 import { localizedPath, resolveLocaleUrl, routeLabels, routePath, switchLocalePath } from '@/lib/i18n'
 import { getMediaUrl } from '@/lib/media-url'
-import { BRAND_LOGO_PATH } from '@/lib/media-filenames'
+import { BRAND_LOGO_UI_PATH } from '@/lib/media-filenames'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 
 export function SiteHeader({
@@ -38,7 +38,7 @@ export function SiteHeaderView({
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [darkHero, setDarkHero] = useState(false)
-  const logoUrl = getMediaUrl(header?.logo) || BRAND_LOGO_PATH
+  const logoUrl = getMediaUrl(header?.logo) || BRAND_LOGO_UI_PATH
   const primaryPhone = site?.phones?.[0]?.number
 
   useEffect(() => {

@@ -1,8 +1,10 @@
 /** Noms de fichiers média normalisés pour SOGICA. */
 
 export const BRAND_LOGO_FILENAME = 'sogica-logo.png'
+export const BRAND_LOGO_WEBP_FILENAME = 'sogica-logo.webp'
 export const BRAND_LOGO_WHITE_FILENAME = 'sogica-logo-white.png'
 export const BRAND_LOGO_PATH = `/brand/${BRAND_LOGO_FILENAME}`
+export const BRAND_LOGO_UI_PATH = `/brand/${BRAND_LOGO_WEBP_FILENAME}`
 export const BRAND_LOGO_WHITE_PATH = `/brand/${BRAND_LOGO_WHITE_FILENAME}`
 
 export const HERO_FALLBACK_FILENAMES = [

@@ -24,6 +24,7 @@ export function LogoCarousel({ items }: { items: LogoCarouselItem[] }) {
               alt={item.name}
               width={200}
               height={80}
+              sizes="(max-width: 768px) 40vw, 200px"
               className="logo-carousel__img"
               unoptimized={item.src.endsWith('.svg')}
             />
