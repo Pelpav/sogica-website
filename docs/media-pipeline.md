@@ -25,6 +25,20 @@ pnpm seed
 
 Importe `_source/brand/` + `_source/photos/` en médias non assignés.
 
+## Synchronisation locale → R2 (prod)
+
+Si les médias ont été importés en local (`USE_LOCAL_MEDIA=true`) mais la base Neon est partagée avec la prod :
+
+```bash
+pnpm import:media
+```
+
+- Envoie `public/media/uploads/`, `_source/photos/` et `_source/brand/` vers le bucket R2
+- Crée les entrées CMS manquantes pour `_source/`
+- Met à jour les URLs Payload vers `R2_PUBLIC_URL`
+
+Options : `--dry-run`, `--force`, `--skip-cms`, `--no-create-missing`
+
 ## CORS R2
 
 Origines autorisées = domaine site + localhost en dev.
