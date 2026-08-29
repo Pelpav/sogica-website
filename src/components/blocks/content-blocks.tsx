@@ -574,22 +574,26 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
             <h2 className="section-title mt-4">
               {txt(block.title) || (locale === 'fr' ? 'Notre méthode de travail' : 'How we work')}
             </h2>
-            {txt(block.description) ? <p className="lead-text mt-4">{txt(block.description)}</p> : null}
-            {block.media != null ? (
-              <div className="process-section__media mt-8">
-                <MediaRenderer media={block.media as MediaType} className="aspect-[4/3] w-full object-cover" />
-              </div>
+            {txt(block.description) ? (
+              <p className="lead-text lead-text--light mt-4">{txt(block.description)}</p>
             ) : null}
           </div>
           <ol className="process-steps">
             {items.map((item, i) => (
               <li key={i} className="process-steps__item">
-                <p className="process-steps__step">{item.year}</p>
-                <h3 className="process-steps__title">{item.title}</h3>
-                {item.description ? <p className="process-steps__desc">{item.description}</p> : null}
+                <p className="process-steps__step">{txt(item.year)}</p>
+                <h3 className="process-steps__title">{txt(item.title)}</h3>
+                {txt(item.description) ? (
+                  <p className="process-steps__desc process-steps__desc--on-dark">{txt(item.description)}</p>
+                ) : null}
               </li>
             ))}
           </ol>
+          {block.media != null ? (
+            <div className="process-section__media">
+              <MediaRenderer media={block.media as MediaType} className="aspect-[4/3] w-full object-cover" />
+            </div>
+          ) : null}
         </div>
       </SectionShell>
     )

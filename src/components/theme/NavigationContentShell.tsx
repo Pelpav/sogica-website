@@ -149,7 +149,10 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
   const canHoldPreviousPage =
     isNavigating && hasRealContent.current && !isPageSkeleton(frozenChildren.current)
 
-  const visibleChildren = canHoldPreviousPage ? frozenChildren.current : children
+  const visibleChildren =
+    canHoldPreviousPage || (isNavigating && isPageSkeleton(children))
+      ? frozenChildren.current
+      : children
 
   return (
     <div

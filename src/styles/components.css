@@ -127,8 +127,9 @@
     color: white;
   }
 
-  .sogica-shell--dark .process-steps__desc {
-    color: rgb(255 255 255 / 0.72);
+  .sogica-shell--dark .process-steps__desc,
+  .process-steps__desc--on-dark {
+    color: rgb(255 255 255 / 0.78);
   }
 
   .sogica-shell--brand .stats-featured__value,
@@ -2775,14 +2776,34 @@
 
   @media (min-width: 1024px) {
     .process-section {
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-      gap: 3rem 4rem;
-      align-items: stretch;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'intro steps'
+        'media steps';
+      gap: 2rem 4rem;
+      align-items: start;
+    }
+
+    .process-section__intro {
+      grid-area: intro;
+    }
+
+    .process-steps {
+      grid-area: steps;
+    }
+
+    .process-section__media {
+      grid-area: media;
+    }
+
+    .process-section:not(:has(.process-section__media)) {
+      grid-template-areas: 'intro steps';
     }
   }
 
   .process-section__intro {
     max-width: none;
+    min-width: 0;
   }
 
   .process-steps {
@@ -2792,14 +2813,6 @@
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-
-  @media (min-width: 1024px) {
-    .process-steps {
-      justify-content: space-between;
-      gap: 2.5rem;
-      min-height: 100%;
-    }
   }
 
   .process-steps__item {
@@ -2838,6 +2851,14 @@
   .process-section__media {
     overflow: hidden;
     border-radius: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .process-steps {
+      justify-content: flex-start;
+      gap: 2rem;
+      min-height: auto;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
