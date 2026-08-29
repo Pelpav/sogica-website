@@ -1,1 +1,4 @@
-export { default } from '../../realisations/[slug]/page'
+import ProjectDetailPage from '../../realisations/[slug]/page'
+
+
+export default ProjectDetailPage

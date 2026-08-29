@@ -1,1 +1,4 @@
-export { default } from '../expertises/page'
+import ExpertisesIndexPage from '../expertises/page'
+
+
+export default ExpertisesIndexPage

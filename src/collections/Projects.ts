@@ -94,9 +94,26 @@ export const Projects: CollectionConfig = {
       name: 'coordinates',
       type: 'group',
       label: 'Coordonnées GPS',
+      admin: {
+        description: 'Latitude et longitude obligatoires pour afficher le projet sur la carte du site.',
+      },
       fields: [
-        { name: 'lat', type: 'number', label: 'Latitude' },
-        { name: 'lng', type: 'number', label: 'Longitude' },
+        {
+          name: 'lat',
+          type: 'number',
+          label: 'Latitude',
+          required: true,
+          min: -90,
+          max: 90,
+        },
+        {
+          name: 'lng',
+          type: 'number',
+          label: 'Longitude',
+          required: true,
+          min: -180,
+          max: 180,
+        },
       ],
     },
     {
@@ -140,10 +157,15 @@ export const Projects: CollectionConfig = {
     {
       name: 'gallery',
       type: 'array',
-      label: 'Galerie',
+      label: 'Galerie photos',
+      admin: {
+        description:
+          'Ajoutez une ou plusieurs photos du chantier. L’image de couverture reste la vignette principale sur les listes.',
+        initCollapsed: false,
+      },
       fields: [
-        { name: 'media', type: 'upload', relationTo: 'media', required: true },
-        { name: 'caption', type: 'text', localized: true },
+        { name: 'media', type: 'upload', relationTo: 'media', required: true, label: 'Photo' },
+        { name: 'caption', type: 'text', localized: true, label: 'Légende' },
       ],
     },
     {

@@ -3,6 +3,17 @@ import fs from 'fs'
 import path from 'path'
 import { getPayload } from 'payload'
 import config from '../payload.config'
+import { assignExpertiseCovers, filterPhotoMedia, pickHeroMediaId } from '../lib/cms-media'
+import {
+  getLegalNoticeSections,
+  getPrivacySections,
+  sectionsToLexical,
+} from '../lib/legal-content'
+import { buildHomeLayout, buildHomeLayoutEn } from './sync-home-layout'
+import {
+  BRAND_LOGO_FILENAME,
+  BRAND_LOGO_WHITE_FILENAME,
+} from '../lib/media-filenames'
 
 const SOURCE_PHOTOS = path.resolve('_source/photos')
 const SOURCE_BRAND = path.resolve('_source/brand')
@@ -55,9 +66,9 @@ async function seed() {
     ],
     emails: [{ address: 'sogicbtp@gmail.com' }],
     defaultSeo: {
-      title: 'SOGICA SA — Ingénierie & BTP',
+      title: 'SOGICA SA · Ingénierie & BTP',
       description:
-        'SOGICA SA — génie civil, construction métallique, équipements de pesage et contrôle routier au Mali.',
+        'SOGICA SA : génie civil, construction métallique, équipements de pesage et contrôle routier au Mali.',
     },
   }
 
@@ -70,24 +81,28 @@ async function seed() {
       tagline:
         'Construction company specializing in civil engineering, metal construction, and road weighing and control systems.',
       defaultSeo: {
-        title: 'SOGICA SA — Engineering & Construction',
+        title: 'SOGICA SA · Engineering & Construction',
         description:
-          'SOGICA SA — civil engineering, metal construction, road weighing and control systems in Mali.',
+          'SOGICA SA: civil engineering, metal construction, road weighing and control systems in Mali.',
       },
     },
   })
 
-  // Legal
+  // Legal (sans identifiants non publiables)
   await payload.updateGlobal({
     slug: 'legal-settings',
     locale: 'fr',
     data: {
-      registrationNumber: 'MA BKO 2016.B.3180',
-      taxNumber: '086147272W',
-      legalForm: 'SA au capital de 100.000.000 francs CFA',
-      capital: '100.000.000 FCFA',
-      approval:
-        'N°2019-714/BTP/API-MALI-GU, modifié N°2024-276/BTP/API-MALI-GU',
+      legalNoticeContent: sectionsToLexical(getLegalNoticeSections('fr')) as never,
+      privacyContent: sectionsToLexical(getPrivacySections('fr')) as never,
+    },
+  })
+  await payload.updateGlobal({
+    slug: 'legal-settings',
+    locale: 'en',
+    data: {
+      legalNoticeContent: sectionsToLexical(getLegalNoticeSections('en')) as never,
+      privacyContent: sectionsToLexical(getPrivacySections('en')) as never,
     },
   })
 
@@ -185,39 +200,7 @@ async function seed() {
     expertiseIds[exp.slug] = created.id
   }
 
-  // Equipment
-  const equipmentList = [
-    { name: 'Camions benne avec grue', qty: 2 },
-    { name: 'Camions bennes simples', qty: 5 },
-    { name: 'Véhicules de liaison', qty: 3 },
-    { name: 'Bétonnières', qty: 4 },
-    { name: 'Postes à soudure', qty: 3 },
-    { name: 'Groupes électrogènes', qty: 2 },
-    { name: 'Lot d\'échafaudage', qty: 1 },
-    { name: 'Lot d\'équipement de sécurité', qty: 1 },
-    { name: 'Lot de petits matériels', qty: 1 },
-  ]
-
-  for (const [i, item] of equipmentList.entries()) {
-    const ex = await payload.find({
-      collection: 'equipment',
-      where: { name: { equals: item.name } },
-      limit: 1,
-    })
-    if (ex.docs.length) continue
-    await payload.create({
-      collection: 'equipment',
-      locale: 'fr',
-      data: {
-        name: item.name,
-        quantity: item.qty,
-        sortOrder: i,
-        sourceNote: 'corporate-presentation',
-      },
-    })
-  }
-
-  // References (no logos)
+  // References partenaires (logos dans public/partners)
   const refs = [
     'PNUD-MLI',
     'Fonds d\'Entretien Routier (FER MALI)',
@@ -247,7 +230,8 @@ async function seed() {
 
   // Import brand logos
   let heroMediaId: number | string | null = null
-  for (const file of ['logo_transparent.png', 'logo.png']) {
+
+  for (const file of [BRAND_LOGO_WHITE_FILENAME, BRAND_LOGO_FILENAME]) {
     const filePath = path.join(SOURCE_BRAND, file)
     if (!fs.existsSync(filePath)) continue
     const existing = await payload.find({
@@ -256,7 +240,6 @@ async function seed() {
       limit: 1,
     })
     if (existing.docs[0]) {
-      if (file === 'logo_transparent.png') heroMediaId = existing.docs[0].id
       continue
     }
     const created = await payload.create({
@@ -264,7 +247,7 @@ async function seed() {
       data: { alt: 'SOGICA SA' },
       filePath,
     })
-    if (file === 'logo_transparent.png') heroMediaId = created.id
+    void created
   }
 
   // Import photos as unassigned media
@@ -291,90 +274,41 @@ async function seed() {
         filePath: path.join(SOURCE_PHOTOS, file),
       })
       imported++
-      if (!heroMediaId && !isVideo && imported === 1) {
-        const m = await payload.find({ collection: 'media', where: { filename: { equals: file } }, limit: 1 })
-        heroMediaId = m.docs[0]?.id ?? heroMediaId
-      }
     }
     console.log(`Imported ${imported} media files (unassigned)`)
   }
 
-  // Pick hero photo - first jpeg imported
-  if (!heroMediaId) {
-    const first = await payload.find({
-      collection: 'media',
-      where: { mediaType: { equals: 'image' } },
-      limit: 1,
-    })
-    heroMediaId = first.docs[0]?.id ?? null
-  }
+  heroMediaId = await pickHeroMediaId(payload)
+  const coversAssigned = await assignExpertiseCovers(payload)
+  if (coversAssigned) console.log(`Assigned ${coversAssigned} expertise cover images`)
 
-  // Gallery media ids for masonry block
   const galleryMedia = await payload.find({
     collection: 'media',
     where: { mediaType: { equals: 'image' } },
-    limit: 12,
+    limit: 50,
     sort: 'createdAt',
   })
+  const galleryIds = filterPhotoMedia(galleryMedia.docs as import('@/payload-types').Media[]).map((m) => m.id)
 
-  const homeLayout = [
-    {
-      blockType: 'hero',
-      title: 'SOGICA SA',
-      subtitle:
-        'Société Générale d\'Ingénieurs de Construction et d\'Aménagement — génie civil, construction métallique et équipements de contrôle routier.',
-      eyebrow: 'BTP · Mali · depuis 2016',
-      media: heroMediaId,
-      mediaType: 'image',
-      layout: 'fullscreen',
-      cta: { label: 'Nos expertises', url: '/fr/expertises' },
-    },
-    {
-      blockType: 'intro',
-      title: 'Une expertise intégrée au service des infrastructures',
-      description:
-        'SOGICA intervient sur les ouvrages de génie civil, la construction métallique et la fourniture-installation d\'équipements spécialisés, de l\'infrastructure à la mise en service.',
-      alignment: 'left',
-    },
-    { blockType: 'expertiseGrid', title: 'Nos domaines d\'expertise', showPrimaryOnly: true },
-    { blockType: 'featuredProjects', title: 'Réalisations' },
-    {
-      blockType: 'stats',
-      title: 'SOGICA en bref',
-      items: [{ value: '2016', label: 'Année de création' }],
-    },
-    {
-      blockType: 'masonry',
-      title: 'Sur le terrain',
-      items: galleryMedia.docs.slice(0, 9).map((m) => ({ media: m.id })),
-    },
-    { blockType: 'clients', title: 'Références & partenaires', featuredOnly: true },
-    { blockType: 'equipment', title: 'Moyens matériels' },
-    {
-      blockType: 'cta',
-      title: 'Un projet d\'infrastructure ?',
-      description: 'Contactez SOGICA pour étudier votre besoin en génie civil, métallique ou équipements routiers.',
-      primaryLabel: 'Demande de devis',
-      primaryUrl: '/fr/demande-de-devis',
-      secondaryLabel: 'Contact',
-      secondaryUrl: '/fr/contact',
-      backgroundVariant: 'dark',
-    },
-  ]
+  const homeLayout = buildHomeLayout(heroMediaId, galleryIds)
 
   const pages = [
     { slug: 'home', title: 'Accueil', pageType: 'home', layout: homeLayout },
-    { slug: 'a-propos', title: 'À propos', pageType: 'about', layout: [
-      { blockType: 'intro', title: 'SOGICA SA', description: siteData.tagline, eyebrow: 'Entreprise' },
-      { blockType: 'timeline', items: [{ year: '2016', title: 'Création de SOGICA SA', description: 'Fondation de la société au Mali.' }] },
-      { blockType: 'equipment', title: 'Parc matériel' },
-    ]},
+    { slug: 'a-propos', title: 'À propos', pageType: 'about', layout: [] },
+    { slug: 'clients-partenaires', title: 'Clients & partenaires', pageType: 'standard', layout: [{ blockType: 'clients', title: 'Ils nous font confiance', featuredOnly: false }] },
     { slug: 'contact', title: 'Contact', pageType: 'contact', layout: [] },
     { slug: 'demande-de-devis', title: 'Demande de devis', pageType: 'quote', layout: [] },
     { slug: 'mentions-legales', title: 'Mentions légales', pageType: 'legal', layout: [
       { blockType: 'richText', content: { root: { children: [{ type: 'paragraph', children: [{ text: 'Contenu éditable via Paramètres légaux dans le CMS.' }] }] } } },
     ]},
     { slug: 'confidentialite', title: 'Confidentialité', pageType: 'legal', layout: [] },
+  ]
+
+  const enPages = [
+    { slug: 'about', title: 'About', pageType: 'about' as const },
+    { slug: 'clients-partners', title: 'Clients & partners', pageType: 'standard' as const },
+    { slug: 'legal-notice', title: 'Legal notice', pageType: 'legal' as const },
+    { slug: 'privacy', title: 'Privacy', pageType: 'legal' as const },
   ]
 
   for (const page of pages) {
@@ -394,6 +328,73 @@ async function seed() {
         pageType: page.pageType as 'home' | 'about' | 'contact' | 'quote' | 'legal' | 'standard',
         layout: page.layout as never,
         showInNav: page.slug !== 'home',
+        _status: 'published',
+      },
+    })
+  }
+
+  for (const page of enPages) {
+    const ex = await payload.find({
+      collection: 'pages',
+      where: { slug: { equals: page.slug } },
+      locale: 'en',
+      limit: 1,
+    })
+    if (ex.docs.length) continue
+    const created = await payload.create({
+      collection: 'pages',
+      locale: 'en',
+      data: {
+        title: page.title,
+        slug: page.slug,
+        pageType: page.pageType,
+        layout: [],
+        showInNav: false,
+        _status: 'published',
+      },
+    })
+    void created
+  }
+
+  const frHome = await payload.find({
+    collection: 'pages',
+    where: { slug: { equals: 'home' } },
+    locale: 'fr',
+    limit: 1,
+  })
+
+  if (frHome.docs[0]) {
+    const homeLayoutEn = buildHomeLayoutEn(heroMediaId, galleryIds)
+    const updatedFr = await payload.update({
+      collection: 'pages',
+      id: frHome.docs[0].id,
+      locale: 'fr',
+      data: {
+        title: 'Accueil',
+        slug: 'home',
+        pageType: 'home',
+        layout: homeLayout as never,
+        showInNav: false,
+        _status: 'published',
+      },
+    })
+    const blockIds = Array.isArray(updatedFr.layout)
+      ? updatedFr.layout.map((block) => String((block as { id?: string }).id ?? '')).filter(Boolean)
+      : []
+    const enLayoutWithIds = (homeLayoutEn as Array<Record<string, unknown>>).map((block, index) => {
+      const id = blockIds[index]
+      return id ? { ...block, id } : block
+    })
+    await payload.update({
+      collection: 'pages',
+      id: frHome.docs[0].id,
+      locale: 'en',
+      data: {
+        title: 'Home',
+        slug: 'home',
+        pageType: 'home',
+        layout: enLayoutWithIds as never,
+        showInNav: false,
         _status: 'published',
       },
     })

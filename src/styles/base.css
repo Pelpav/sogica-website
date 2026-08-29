@@ -4,6 +4,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-intensity: 0;
+    }
+
     html {
       scroll-behavior: auto;
     }
@@ -21,8 +25,9 @@
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
-    line-height: 1.6;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   h1,
@@ -30,10 +35,9 @@
   h3,
   h4 {
     font-family: var(--font-heading);
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     line-height: 1.15;
-    text-transform: uppercase;
   }
 
   :focus-visible {
@@ -53,5 +57,44 @@
 
   .skip-link:focus {
     left: 0;
+  }
+
+  /* Scrollbars personnalisées */
+  html {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-primary) 70%, #8a8a8a) var(--color-surface-alt);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-primary) 55%, #9a9a9a) var(--color-surface-alt);
+  }
+
+  *::-webkit-scrollbar {
+    width: 0.65rem;
+    height: 0.65rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--color-surface-alt);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 2px solid var(--color-surface-alt);
+    border-radius: 999px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-primary) 85%, white),
+      color-mix(in srgb, var(--color-primary) 65%, #444)
+    );
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: var(--color-surface-alt);
   }
 }

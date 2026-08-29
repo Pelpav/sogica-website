@@ -31,6 +31,8 @@ export function CmsImage({
         className={`object-cover ${className}`}
         sizes={sizes}
         priority={priority}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
       />
     )
   }
@@ -47,6 +49,8 @@ export function CmsImage({
       className={`h-auto w-full ${className}`}
       sizes={sizes}
       priority={priority}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : 'auto'}
     />
   )
 }

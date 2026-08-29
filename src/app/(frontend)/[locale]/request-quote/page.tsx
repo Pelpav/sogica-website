@@ -1,1 +1,2 @@
-export { default } from '../demande-de-devis/page'
+
+export { generateMetadata, default } from '../demande-de-devis/page'

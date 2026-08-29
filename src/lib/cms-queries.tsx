@@ -1,9 +1,18 @@
 import Link from 'next/link'
+import { cacheLife, cacheTag } from 'next/cache'
 import type { Locale } from '@/lib/i18n'
 import { localizedPath } from '@/lib/i18n'
 import { getPayloadClient } from '@/lib/payload'
 
+function tagCollection(collection: string, locale: Locale) {
+  cacheTag('cms', `cms-${collection}`, `cms-${collection}-${locale}`)
+}
+
 export async function fetchExpertises(locale: Locale, primaryOnly = false) {
+  'use cache'
+  tagCollection('expertises', locale)
+  cacheLife('hours')
+
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'expertises',
@@ -21,6 +30,10 @@ export async function fetchExpertises(locale: Locale, primaryOnly = false) {
 }
 
 export async function fetchProjects(locale: Locale, limit = 12, featured?: boolean) {
+  'use cache'
+  tagCollection('projects', locale)
+  cacheLife('hours')
+
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'projects',
@@ -34,6 +47,79 @@ export async function fetchProjects(locale: Locale, limit = 12, featured?: boole
     sort: 'sortOrder',
     limit,
     depth: 2,
+  })
+}
+
+export type ProjectMapPoint = {
+  id: string
+  title: string
+  slug: string
+  lat: number
+  lng: number
+}
+
+export async function fetchProjectMapPoints(locale: Locale, limit = 100): Promise<ProjectMapPoint[]> {
+  'use cache'
+  tagCollection('projects-map', locale)
+  cacheLife('hours')
+
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'projects',
+    locale,
+    where: { _status: { equals: 'published' } },
+    limit,
+    depth: 0,
+  })
+
+  return docs
+    .filter(
+      (project) =>
+        typeof project.coordinates?.lat === 'number' &&
+        typeof project.coordinates?.lng === 'number',
+    )
+    .map((project) => ({
+      id: String(project.id),
+      title: project.title || '',
+      slug: project.slug || '',
+      lat: project.coordinates!.lat!,
+      lng: project.coordinates!.lng!,
+    }))
+}
+
+export async function fetchClientsPartners(locale: Locale, featuredOnly = true) {
+  'use cache'
+  tagCollection('clients-partners', locale)
+  cacheLife('hours')
+
+  const payload = await getPayloadClient()
+  return payload.find({
+    collection: 'clients-partners',
+    locale,
+    where: {
+      and: [
+        { _status: { equals: 'published' } },
+        ...(featuredOnly ? [{ featured: { equals: true } }] : []),
+      ],
+    },
+    sort: 'sortOrder',
+    limit: 24,
+    depth: 1,
+  })
+}
+
+export async function fetchEquipment(locale: Locale) {
+  'use cache'
+  tagCollection('equipment', locale)
+  cacheLife('hours')
+
+  const payload = await getPayloadClient()
+  return payload.find({
+    collection: 'equipment',
+    locale,
+    sort: 'sortOrder',
+    limit: 50,
+    depth: 1,
   })
 }
 

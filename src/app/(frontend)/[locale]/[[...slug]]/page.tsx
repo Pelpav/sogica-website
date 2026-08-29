@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { BlockRenderer } from '@/components/blocks/BlockRenderer'
+import { CmsCustomPage } from '@/components/pages/cms-custom-page'
 import { findPageBySlug, getGlobal } from '@/lib/payload'
-import { isLocale, type Locale } from '@/lib/i18n'
+import { isLocale, switchLocalePath, type Locale } from '@/lib/i18n'
+import { withPageSuspense } from '@/lib/page-suspense'
 
 type Props = {
   params: Promise<{ locale: string; slug?: string[] }>
@@ -17,21 +18,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = page?.seo?.title || page?.title || site?.defaultSeo?.title || site?.companyName
   const description = page?.seo?.description || site?.defaultSeo?.description || site?.tagline
 
+  const canonicalPath = `/${locale}/${pageSlug === 'home' ? '' : pageSlug}`.replace(/\/$/, '') || `/${locale}`
+
   return {
     title,
     description: description || undefined,
     alternates: {
-      canonical: `/${locale}/${pageSlug === 'home' ? '' : pageSlug}`.replace(/\/$/, '') || `/${locale}`,
+      canonical: canonicalPath,
       languages: {
-        fr: `/fr${pageSlug === 'home' ? '' : `/${pageSlug}`}`,
-        en: `/en${pageSlug === 'home' ? '' : `/${pageSlug}`}`,
+        fr: switchLocalePath(canonicalPath, 'fr'),
+        en: switchLocalePath(canonicalPath, 'en'),
       },
     },
     robots: page?.seo?.noindex ? { index: false } : undefined,
   }
 }
 
-export default async function CmsPage({ params }: Props) {
+async function CmsPageContent({ params }: Props) {
   const { locale, slug } = await params
   if (!isLocale(locale)) notFound()
 
@@ -39,7 +42,7 @@ export default async function CmsPage({ params }: Props) {
   const page = await findPageBySlug(pageSlug, locale)
   if (!page) notFound()
 
-  return (
-    <BlockRenderer blocks={page.layout as Parameters<typeof BlockRenderer>[0]['blocks']} locale={locale as Locale} />
-  )
+  return <CmsCustomPage page={page} locale={locale as Locale} />
 }
+
+export default withPageSuspense(CmsPageContent)

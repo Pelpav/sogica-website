@@ -1,1 +1,4 @@
-export { default } from '../../expertises/[slug]/page'
+import ExpertiseDetailPage from '../../expertises/[slug]/page'
+
+
+export default ExpertiseDetailPage

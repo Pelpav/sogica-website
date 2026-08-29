@@ -55,7 +55,7 @@ export default buildConfig({
     },
 
     meta: {
-      titleSuffix: '— SOGICA CMS',
+      titleSuffix: '| SOGICA CMS',
     },
   },
 

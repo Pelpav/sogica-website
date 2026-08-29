@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "build": "pnpm generate:importmap && pnpm generate:types && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "eslint .",
@@ -15,10 +15,15 @@
     "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/seed.ts",
+    "seed:sample-projects": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/seed-sample-projects.ts",
+    "seed:sample-projects:clean": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/seed-sample-projects.ts --clean",
+    "rename:media": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/rename-media-files.ts",
+    "sync:home": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/sync-home-layout.ts",
     "import:media": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/import-local-media.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "quality-gate": "pnpm typecheck && pnpm lint && pnpm test && pnpm build"
+    "quality-gate": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "postinstall": "pnpm generate:importmap && pnpm generate:types"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.750.0",
@@ -35,10 +40,10 @@
     "dotenv": "^16.4.7",
     "graphql": "^16.10.0",
     "maplibre-gl": "^5.1.0",
-    "next": "15.2.6",
+    "next": "16.3.3",
     "payload": "3.88.0",
-    "react": "19.0.1",
-    "react-dom": "19.0.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "sharp": "0.33.5",
     "zod": "^3.24.2"
   },
@@ -51,7 +56,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "eslint": "^9.22.0",
-    "eslint-config-next": "15.2.6",
+    "eslint-config-next": "16.3.3",
     "pg": "^8.23.0",
     "tailwindcss": "^4.0.9",
     "tsx": "^4.19.3",

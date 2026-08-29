@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isLocale, localizedPath, alternateLocale } from '@/lib/i18n'
+import { alternateLocale, isLocale, localizedPath, resolveLocaleUrl, switchLocalePath } from '@/lib/i18n'
 
 describe('i18n', () => {
   it('validates locales', () => {
@@ -16,6 +16,20 @@ describe('i18n', () => {
   it('alternates locale', () => {
     expect(alternateLocale('fr')).toBe('en')
     expect(alternateLocale('en')).toBe('fr')
+  })
+
+  it('switches locale paths with translated route segments', () => {
+    expect(switchLocalePath('/fr/clients-partenaires', 'en')).toBe('/en/clients-partners')
+    expect(switchLocalePath('/en/clients-partners', 'fr')).toBe('/fr/clients-partenaires')
+    expect(switchLocalePath('/fr/mentions-legales', 'en')).toBe('/en/legal-notice')
+    expect(switchLocalePath('/fr/realisations/projet-test', 'en')).toBe('/en/projects/projet-test')
+    expect(switchLocalePath('/fr', 'en')).toBe('/en')
+  })
+
+  it('normalizes CMS URLs to the active locale', () => {
+    expect(resolveLocaleUrl('/fr/demande-de-devis', 'en')).toBe('/en/request-quote')
+    expect(resolveLocaleUrl('/en/clients-partenaires', 'en')).toBe('/en/clients-partners')
+    expect(resolveLocaleUrl('/contact', 'fr')).toBe('/fr/contact')
   })
 })
 

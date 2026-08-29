@@ -1,11 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Locale } from '@/lib/i18n'
 
-export function ContactForm({ locale, formType = 'contact' }: { locale: Locale; formType?: 'contact' | 'quote' }) {
+export function ContactForm({
+  locale,
+  formType = 'contact',
+  variant = 'default',
+}: {
+  locale: Locale
+  formType?: 'contact' | 'quote'
+  variant?: 'default' | 'home'
+}) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
+  const [formStartedAt, setFormStartedAt] = useState('')
+
+  useEffect(() => {
+    setFormStartedAt(String(Date.now()))
+  }, [])
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -38,39 +51,49 @@ export function ContactForm({ locale, formType = 'contact' }: { locale: Locale; 
     )
   }
 
+  const fieldClass =
+    variant === 'home'
+      ? 'min-h-11 w-full rounded-[var(--radius-base)] border border-[var(--color-border)] bg-white px-4 py-2.5 text-[var(--color-foreground)] outline-none transition-colors focus:border-[var(--color-primary)]'
+      : 'min-h-11 border border-[var(--color-border)] px-3'
+
+  const textareaClass =
+    variant === 'home'
+      ? 'w-full rounded-[var(--radius-base)] border border-[var(--color-border)] bg-white px-4 py-3 text-[var(--color-foreground)] outline-none transition-colors focus:border-[var(--color-primary)]'
+      : 'border border-[var(--color-border)] px-3 py-2'
+
   return (
-    <form onSubmit={onSubmit} className="grid gap-4" noValidate>
+    <form onSubmit={onSubmit} className={`grid gap-4 ${variant === 'home' ? 'contact-form-home' : ''}`} noValidate>
       <input type="text" name="honeypot" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
-      <input type="hidden" name="formStartedAt" value={String(Date.now())} />
+      <input type="hidden" name="formStartedAt" value={formStartedAt} />
 
       <label className="grid gap-1">
         <span>{locale === 'fr' ? 'Nom' : 'Name'} *</span>
-        <input name="name" required className="min-h-11 border border-[var(--color-border)] px-3" />
+        <input name="name" required className={fieldClass} />
       </label>
 
       <label className="grid gap-1">
         <span>E-mail *</span>
-        <input name="email" type="email" required className="min-h-11 border border-[var(--color-border)] px-3" />
+        <input name="email" type="email" required className={fieldClass} />
       </label>
 
       <label className="grid gap-1">
         <span>{locale === 'fr' ? 'Téléphone' : 'Phone'}</span>
-        <input name="phone" type="tel" className="min-h-11 border border-[var(--color-border)] px-3" />
+        <input name="phone" type="tel" className={fieldClass} />
       </label>
 
       {formType === 'quote' && (
         <>
           <label className="grid gap-1">
             <span>{locale === 'fr' ? 'Organisation' : 'Organization'}</span>
-            <input name="organization" className="min-h-11 border border-[var(--color-border)] px-3" />
+            <input name="organization" className={fieldClass} />
           </label>
           <label className="grid gap-1">
             <span>{locale === 'fr' ? 'Lieu du projet' : 'Project location'}</span>
-            <input name="projectLocation" className="min-h-11 border border-[var(--color-border)] px-3" />
+            <input name="projectLocation" className={fieldClass} />
           </label>
           <label className="grid gap-1">
             <span>{locale === 'fr' ? 'Description' : 'Description'} *</span>
-            <textarea name="description" required rows={5} className="border border-[var(--color-border)] px-3 py-2" />
+            <textarea name="description" required rows={5} className={textareaClass} />
           </label>
         </>
       )}
@@ -79,11 +102,11 @@ export function ContactForm({ locale, formType = 'contact' }: { locale: Locale; 
         <>
           <label className="grid gap-1">
             <span>{locale === 'fr' ? 'Sujet' : 'Subject'}</span>
-            <input name="subject" className="min-h-11 border border-[var(--color-border)] px-3" />
+            <input name="subject" className={fieldClass} />
           </label>
           <label className="grid gap-1">
             <span>{locale === 'fr' ? 'Message' : 'Message'} *</span>
-            <textarea name="message" required rows={5} className="border border-[var(--color-border)] px-3 py-2" />
+            <textarea name="message" required rows={5} className={textareaClass} />
           </label>
         </>
       )}

@@ -1,23 +1,39 @@
 :root {
   --color-primary: #f00080;
-  --color-secondary: #111111;
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 12%, white);
+  --color-secondary: #1e1e1e;
   --color-accent: #d4af37;
-  --color-background: #fafafa;
-  --color-foreground: #111111;
-  --color-muted: #f3f3f3;
-  --color-muted-foreground: #666666;
-  --color-border: #e5e5e5;
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-muted: #f4f3f0;
+  --color-muted-foreground: #5f5f5f;
+  --color-border: #e8e6e1;
   --color-destructive: #dc2626;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8f7f5;
 
   --font-heading: var(--font-barlow), 'Barlow Condensed', system-ui, sans-serif;
   --font-body: var(--font-source), 'Source Sans 3', system-ui, sans-serif;
 
-  --container-max: 1280px;
-  --section-spacing: 5rem;
-  --radius-base: 0px;
+  --container-max: 1240px;
+  --section-spacing: 5.5rem;
+  --section-spacing-sm: 3.75rem;
+  --radius-base: 12px;
+  --radius-lg: 20px;
   --motion-intensity: 1;
 
-  --header-height: 4.5rem;
+  --header-height: 5.5rem;
+  --shadow-card: 0 4px 24px color-mix(in srgb, #1a1a1a 6%, transparent);
+  --shadow-card-hover: 0 12px 40px color-mix(in srgb, #1a1a1a 10%, transparent);
+  --hero-overlay: linear-gradient(
+    105deg,
+    rgb(8 8 8 / 0.88) 0%,
+    rgb(8 8 8 / 0.62) 42%,
+    rgb(8 8 8 / 0.28) 72%,
+    rgb(8 8 8 / 0.12) 100%
+  );
+  --hero-scrim: linear-gradient(to top, rgb(8 8 8 / 0.72) 0%, rgb(8 8 8 / 0.18) 42%, transparent 68%);
+  --pattern-blueprint: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M40 0H0v40' fill='none' stroke='%231a1a1a' stroke-opacity='0.04'/%3E%3C/svg%3E");
 }
 
 [data-section-spacing='compact'] {
@@ -25,23 +41,24 @@
 }
 
 [data-section-spacing='relaxed'] {
-  --section-spacing: 6.5rem;
+  --section-spacing: 6rem;
+}
+
+[data-radius='sharp'] {
+  --radius-base: 0px;
+  --radius-lg: 0px;
 }
 
 [data-radius='soft'] {
-  --radius-base: 4px;
+  --radius-base: 8px;
+  --radius-lg: 16px;
 }
 
 [data-radius='round'] {
-  --radius-base: 8px;
+  --radius-base: 12px;
+  --radius-lg: 24px;
 }
 
 [data-motion='none'] {
   --motion-intensity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --motion-intensity: 0;
-  }
 }

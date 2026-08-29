@@ -88,7 +88,9 @@ Use MapLibre with a configurable tile/style provider.
 ## Visual storytelling
 
 - Use authentic supplied project media.
-- Avoid turning every project into the same card-heavy template.
-- Flagship projects may use immersive editorial layouts.
+- Prefer **overlay cards** (`.project-card-overlay`) for listings: image full-bleed, gradient sombre, titre et année en overlay — not text below image in a separate card body.
+- Featured project layouts: first project spans 2 columns with wide aspect ratio.
+- Avoid turning every project into the same uniform card grid.
+- Flagship projects may use immersive editorial layouts on detail pages.
 - Video must not autoplay with sound.
 - Use posters, lazy loading, captions when available, and reduced-motion-friendly behavior.

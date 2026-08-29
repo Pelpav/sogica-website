@@ -51,15 +51,25 @@ export const HeroBlock: Block = {
       label: 'Disposition',
       options: [
         { label: 'Plein écran', value: 'fullscreen' },
+        { label: 'Construktion (split)', value: 'construktion' },
         { label: 'Contenu + média', value: 'split' },
         { label: 'Centré', value: 'centered' },
       ],
-      defaultValue: 'fullscreen',
+      defaultValue: 'construktion',
     },
     {
       name: 'cta',
       type: 'group',
-      label: 'CTA',
+      label: 'CTA principal',
+      fields: [
+        { name: 'label', type: 'text', localized: true },
+        { name: 'url', type: 'text', localized: true },
+      ],
+    },
+    {
+      name: 'secondaryCta',
+      type: 'group',
+      label: 'CTA secondaire',
       fields: [
         { name: 'label', type: 'text', localized: true },
         { name: 'url', type: 'text', localized: true },
@@ -87,6 +97,30 @@ export const IntroBlock: Block = {
       ],
       defaultValue: 'left',
     },
+    { name: 'watermark', type: 'text', localized: true, label: 'Texte filigrane décoratif' },
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Variante',
+      defaultValue: 'simple',
+      options: [
+        { label: 'Simple', value: 'simple' },
+        { label: 'Composée (stat + image)', value: 'composed' },
+      ],
+    },
+    {
+      name: 'featuredStat',
+      type: 'group',
+      label: 'Statistique mise en avant',
+      admin: {
+        condition: (_, siblingData) => siblingData?.variant === 'composed',
+      },
+      fields: [
+        { name: 'value', type: 'text', label: 'Valeur' },
+        { name: 'label', type: 'text', localized: true, label: 'Libellé' },
+      ],
+    },
+    { name: 'media', type: 'upload', relationTo: 'media', label: 'Image (optionnelle)' },
   ],
 }
 
@@ -226,7 +260,18 @@ export const StatsBlock: Block = {
         { name: 'value', type: 'text', localized: true, required: true },
         { name: 'label', type: 'text', localized: true, required: true },
       ],
-      admin: { description: 'Uniquement des faits attestés — ne pas inventer' },
+      admin: { description: 'Uniquement des faits attestés, ne pas inventer' },
+    },
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Style',
+      defaultValue: 'featured',
+      options: [
+        { label: 'Bande horizontale', value: 'band' },
+        { label: 'Grille', value: 'grid' },
+        { label: 'Construktion (3 chiffres)', value: 'featured' },
+      ],
     },
   ],
 }
@@ -236,8 +281,21 @@ export const ExpertiseGridBlock: Block = {
   labels: { singular: 'Grille expertises', plural: 'Grilles expertises' },
   fields: [
     hiddenField,
+    backgroundVariant,
     { name: 'title', type: 'text', localized: true },
     { name: 'showPrimaryOnly', type: 'checkbox', label: 'Domaines principaux uniquement', defaultValue: true },
+    {
+      name: 'layout',
+      type: 'select',
+      label: 'Disposition',
+      defaultValue: 'services',
+      options: [
+        { label: 'Cartes verticales', value: 'vertical' },
+        { label: 'Liste services', value: 'services' },
+        { label: 'Showcase interactif', value: 'showcase' },
+        { label: 'Grille classique', value: 'grid' },
+      ],
+    },
   ],
 }
 
@@ -246,6 +304,7 @@ export const FeaturedProjectsBlock: Block = {
   labels: { singular: 'Projets featured', plural: 'Projets featured' },
   fields: [
     hiddenField,
+    backgroundVariant,
     { name: 'title', type: 'text', localized: true },
     {
       name: 'projects',
@@ -254,7 +313,18 @@ export const FeaturedProjectsBlock: Block = {
       hasMany: true,
       label: 'Projets (auto si vide)',
     },
-    { name: 'limit', type: 'number', defaultValue: 3 },
+    { name: 'limit', type: 'number', defaultValue: 4 },
+    {
+      name: 'layout',
+      type: 'select',
+      label: 'Disposition',
+      defaultValue: 'showcase',
+      options: [
+        { label: 'Grille éditoriale 2×2', value: 'editorial' },
+        { label: 'Showcase + grille', value: 'showcase' },
+        { label: 'Grille standard', value: 'grid' },
+      ],
+    },
   ],
 }
 
@@ -305,6 +375,16 @@ export const CtaBlock: Block = {
   fields: [
     hiddenField,
     backgroundVariant,
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Style',
+      defaultValue: 'centered',
+      options: [
+        { label: 'Centré', value: 'centered' },
+        { label: 'Bandeau pleine largeur', value: 'banner' },
+      ],
+    },
     { name: 'title', type: 'text', localized: true, required: true },
     { name: 'description', type: 'textarea', localized: true },
     { name: 'primaryLabel', type: 'text', localized: true },
@@ -330,6 +410,21 @@ export const TimelineBlock: Block = {
   labels: { singular: 'Timeline', plural: 'Timelines' },
   fields: [
     hiddenField,
+    backgroundVariant,
+    { name: 'eyebrow', type: 'text', localized: true, label: 'Sur-titre' },
+    { name: 'title', type: 'text', localized: true, label: 'Titre' },
+    { name: 'description', type: 'textarea', localized: true, label: 'Description' },
+    { name: 'media', type: 'upload', relationTo: 'media', label: 'Image' },
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Style',
+      defaultValue: 'process',
+      options: [
+        { label: 'Processus (3 étapes)', value: 'process' },
+        { label: 'Liste verticale', value: 'list' },
+      ],
+    },
     {
       name: 'items',
       type: 'array',
@@ -347,9 +442,66 @@ export const QuoteBlock: Block = {
   labels: { singular: 'Citation', plural: 'Citations' },
   fields: [
     hiddenField,
+    backgroundVariant,
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Style',
+      defaultValue: 'simple',
+      options: [
+        { label: 'Simple', value: 'simple' },
+        { label: 'Témoignage', value: 'testimonial' },
+      ],
+    },
     { name: 'quote', type: 'textarea', localized: true, required: true },
     { name: 'attribution', type: 'text', localized: true },
     { name: 'role', type: 'text', localized: true },
+    { name: 'media', type: 'upload', relationTo: 'media', label: 'Photo (témoignage)' },
+  ],
+}
+
+export const FaqBlock: Block = {
+  slug: 'faq',
+  labels: { singular: 'FAQ', plural: 'FAQ' },
+  fields: [
+    hiddenField,
+    backgroundVariant,
+    { name: 'eyebrow', type: 'text', localized: true, label: 'Sur-titre' },
+    { name: 'title', type: 'text', localized: true, required: true, label: 'Titre' },
+    { name: 'description', type: 'textarea', localized: true, label: 'Description' },
+    { name: 'supportMedia', type: 'upload', relationTo: 'media', label: 'Image support' },
+    { name: 'supportPhone', type: 'text', label: 'Téléphone support' },
+    {
+      name: 'items',
+      type: 'array',
+      label: 'Questions',
+      fields: [
+        { name: 'question', type: 'text', localized: true, required: true },
+        { name: 'answer', type: 'textarea', localized: true, required: true },
+      ],
+    },
+  ],
+}
+
+export const ContactSectionBlock: Block = {
+  slug: 'contactSection',
+  labels: { singular: 'Section contact', plural: 'Sections contact' },
+  fields: [
+    hiddenField,
+    backgroundVariant,
+    { name: 'eyebrow', type: 'text', localized: true, label: 'Sur-titre' },
+    { name: 'title', type: 'text', localized: true, required: true, label: 'Titre' },
+    { name: 'description', type: 'textarea', localized: true, label: 'Description' },
+    {
+      name: 'formType',
+      type: 'select',
+      label: 'Type de formulaire',
+      defaultValue: 'contact',
+      options: [
+        { label: 'Contact', value: 'contact' },
+        { label: 'Devis', value: 'quote' },
+      ],
+    },
   ],
 }
 
@@ -367,6 +519,62 @@ export const SpacerBlock: Block = {
         { label: 'Grand', value: 'lg' },
       ],
       defaultValue: 'md',
+    },
+  ],
+}
+
+export const MarqueeBlock: Block = {
+  slug: 'marquee',
+  labels: { singular: 'Bande défilante', plural: 'Bandes défilantes' },
+  fields: [
+    hiddenField,
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Style',
+      defaultValue: 'default',
+      options: [
+        { label: 'Clair', value: 'default' },
+        { label: 'Magenta', value: 'accent' },
+      ],
+    },
+    {
+      name: 'items',
+      type: 'array',
+      label: 'Éléments',
+      fields: [{ name: 'label', type: 'text', localized: true, required: true }],
+    },
+  ],
+}
+
+export const WhyChooseUsBlock: Block = {
+  slug: 'whyChooseUs',
+  labels: { singular: 'Pourquoi nous choisir', plural: 'Pourquoi nous choisir' },
+  fields: [
+    hiddenField,
+    backgroundVariant,
+    {
+      name: 'variant',
+      type: 'select',
+      label: 'Style',
+      defaultValue: 'features',
+      options: [
+        { label: 'Grille atouts', value: 'features' },
+        { label: 'Liste + image', value: 'split' },
+      ],
+    },
+    { name: 'eyebrow', type: 'text', localized: true, label: 'Sur-titre' },
+    { name: 'title', type: 'text', localized: true, required: true, label: 'Titre' },
+    { name: 'description', type: 'textarea', localized: true, label: 'Description' },
+    { name: 'media', type: 'upload', relationTo: 'media', label: 'Image' },
+    { name: 'ctaLabel', type: 'text', localized: true, label: 'CTA libellé' },
+    { name: 'ctaUrl', type: 'text', localized: true, label: 'CTA URL' },
+    {
+      name: 'items',
+      type: 'array',
+      label: 'Points forts',
+      fields: [{ name: 'text', type: 'text', localized: true, required: true }],
+      admin: { description: 'Uniquement des faits attestés' },
     },
   ],
 }
@@ -393,4 +601,8 @@ export const pageBuilderBlocks = [
   TimelineBlock,
   QuoteBlock,
   SpacerBlock,
+  MarqueeBlock,
+  WhyChooseUsBlock,
+  FaqBlock,
+  ContactSectionBlock,
 ]

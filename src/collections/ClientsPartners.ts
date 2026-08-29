@@ -29,7 +29,7 @@ export const ClientsPartners: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       label: 'Logo (optionnel)',
-      admin: { description: 'Uniquement si logo fourni — jamais téléchargé depuis le web' },
+      admin: { description: 'Uniquement si logo fourni, jamais téléchargé depuis le web' },
     },
     {
       name: 'website',

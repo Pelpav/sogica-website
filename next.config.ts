@@ -1,12 +1,23 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+  async redirects() {
+    return [
+      {
+        source: '/fr/moyens-materiels',
+        destination: '/fr/expertises',
+        permanent: true,
+      },
+      {
+        source: '/en/equipment',
+        destination: '/en/expertise',
+        permanent: true,
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {
@@ -22,6 +33,7 @@ const nextConfig: NextConfig = {
       { pathname: '/api/media/file/**' },
       { pathname: '/brand/**' },
       { pathname: '/media/**' },
+      { pathname: '/partners/**' },
     ],
   },
   webpack: (webpackConfig) => {
@@ -31,9 +43,6 @@ const nextConfig: NextConfig = {
       '.mjs': ['.mts', '.mjs'],
     }
     return webpackConfig
-  },
-  turbopack: {
-    root: path.resolve(__dirname),
   },
 }
 

@@ -7,11 +7,12 @@ import {
   GalleryBlock,
   MasonryBlock,
   StatsBlock,
+  MarqueeBlock,
+  WhyChooseUsBlock,
   ExpertiseGridBlock,
   FeaturedProjectsBlock,
   ProjectGridBlock,
   ClientsBlock,
-  EquipmentBlock,
   MapBlock,
   CtaBlock,
   BeforeAfterBlock,
@@ -19,6 +20,8 @@ import {
   QuoteBlock,
   FullWidthMediaBlock,
   SpacerBlock,
+  FaqBlock,
+  ContactSectionBlock,
 } from './data-blocks'
 
 export type PageBlock = {
@@ -28,10 +31,22 @@ export type PageBlock = {
   [key: string]: unknown
 }
 
+/** Évite CTA + contact + footer CTA en triple avant le pied de page. */
+function dedupeTrailingConversionBlocks(blocks: PageBlock[]): PageBlock[] {
+  const visible = blocks.filter((block) => !block.hidden)
+  const contactIndex = visible.findIndex((block) => block.blockType === 'contactSection')
+  if (contactIndex === -1) return visible
+
+  return visible.filter((block, index) => {
+    if (block.blockType !== 'cta') return true
+    return index > contactIndex
+  })
+}
+
 export async function BlockRenderer({ blocks, locale }: { blocks: PageBlock[] | null | undefined; locale: Locale }) {
   if (!blocks?.length) return null
 
-  const visible = blocks.filter((b) => !b.hidden)
+  const visible = dedupeTrailingConversionBlocks(blocks)
 
   return (
     <>
@@ -42,7 +57,7 @@ export async function BlockRenderer({ blocks, locale }: { blocks: PageBlock[] | 
           case 'hero':
             return <HeroBlock key={key} block={block} locale={locale} priority={index === 0} />
           case 'intro':
-            return <IntroBlock key={key} block={block} />
+            return <IntroBlock key={key} block={block} locale={locale} />
           case 'richText':
             return <RichTextBlock key={key} block={block} />
           case 'textMedia':
@@ -57,6 +72,10 @@ export async function BlockRenderer({ blocks, locale }: { blocks: PageBlock[] | 
             return <MasonryBlock key={key} block={block} />
           case 'stats':
             return <StatsBlock key={key} block={block} />
+          case 'marquee':
+            return <MarqueeBlock key={key} block={block} />
+          case 'whyChooseUs':
+            return <WhyChooseUsBlock key={key} block={block} locale={locale} />
           case 'expertiseGrid':
             return <ExpertiseGridBlock key={key} block={block} locale={locale} />
           case 'featuredProjects':
@@ -66,17 +85,21 @@ export async function BlockRenderer({ blocks, locale }: { blocks: PageBlock[] | 
           case 'clients':
             return <ClientsBlock key={key} block={block} locale={locale} />
           case 'equipment':
-            return <EquipmentBlock key={key} block={block} locale={locale} />
+            return null
           case 'map':
             return <MapBlock key={key} block={block} locale={locale} />
           case 'cta':
-            return <CtaBlock key={key} block={block} />
+            return <CtaBlock key={key} block={block} locale={locale} />
           case 'beforeAfter':
             return <BeforeAfterBlock key={key} block={block} />
           case 'timeline':
-            return <TimelineBlock key={key} block={block} />
+            return <TimelineBlock key={key} block={block} locale={locale} />
           case 'quote':
             return <QuoteBlock key={key} block={block} />
+          case 'faq':
+            return <FaqBlock key={key} block={block} locale={locale} />
+          case 'contactSection':
+            return <ContactSectionBlock key={key} block={block} locale={locale} />
           case 'spacer':
             return <SpacerBlock key={key} block={block} />
           default:
