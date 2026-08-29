@@ -1,16 +1,17 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isAdminFieldLevel, isAuthenticatedFieldLevel } from '../access/roles'
+import { isAdmin, isAdminFieldLevel, isAuthenticated, isAuthenticatedFieldLevel } from '../access/roles'
 
 export const FormSubmissions: CollectionConfig = {
   slug: 'form-submissions',
   labels: { singular: 'Soumission', plural: 'Formulaires' },
   admin: {
-    group: 'Formulaires',
+    group: 'Messages reçus',
+    description: 'Demandes de contact et de devis envoyées depuis le site.',
     useAsTitle: 'email',
     defaultColumns: ['formType', 'name', 'email', 'status', 'createdAt'],
   },
   access: {
-    read: isAdmin,
+    read: isAuthenticated,
     create: () => true,
     update: isAdmin,
     delete: isAdmin,
@@ -88,8 +89,9 @@ export const PrivateMedia: CollectionConfig = {
   slug: 'private-media',
   labels: { singular: 'Fichier privé', plural: 'Fichiers privés' },
   admin: {
-    group: 'Médias',
-    hidden: ({ user }) => user?.role === 'editor',
+    group: 'Photos & fichiers',
+    description: 'Fichiers confidentiels (devis, pièces jointes) — accès restreint.',
+    hidden: ({ user }) => user?.role === 'owner' || user?.role === 'editor',
   },
   access: {
     read: isAdmin,

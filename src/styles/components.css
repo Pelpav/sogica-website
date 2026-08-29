@@ -3218,6 +3218,12 @@
     filter: contrast(1.08) saturate(1.12) brightness(1.03);
   }
 
+  .site-preloader__fallback {
+    object-fit: contain;
+    padding: 2rem;
+    filter: none;
+  }
+
   .site-preloader__vignette {
     position: absolute;
     inset: 0;

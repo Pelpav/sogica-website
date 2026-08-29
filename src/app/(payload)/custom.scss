@@ -1,5 +1,401 @@
-/* Payload Admin custom styles */
+/* SOGICA — Admin Payload, aligné sur le site public */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+
 :root {
-  --theme-bg: #111;
-  --theme-primary: #f00080;
+  --sogica-primary: #f00080;
+  --sogica-secondary: #1e1e1e;
+  --sogica-accent: #d4af37;
+  --sogica-bg: #fafaf8;
+  --sogica-surface: #ffffff;
+  --sogica-text: #1a1a1a;
+  --sogica-muted: #5f5f5f;
+  --sogica-border: #e8e6e1;
+  --sogica-radius: 12px;
+
+  --theme-bg: var(--sogica-bg);
+  --theme-input-bg: var(--sogica-surface);
+  --theme-text: var(--sogica-text);
+  --theme-elevation-0: var(--sogica-surface);
+  --theme-elevation-50: #f4f3f0;
+  --theme-elevation-100: #eceae6;
+  --theme-elevation-150: #e8e6e1;
+  --theme-elevation-200: #dedbd5;
+  --theme-elevation-250: #d4d0c9;
+  --theme-elevation-300: #c9c5bd;
+  --theme-elevation-350: #bfbab1;
+  --theme-elevation-400: #b5afa5;
+  --theme-elevation-450: #aaa499;
+  --theme-elevation-500: #a0998d;
+  --theme-elevation-550: #958e81;
+  --theme-elevation-600: #8a8275;
+  --theme-elevation-650: #7f7769;
+  --theme-elevation-700: #746c5d;
+  --theme-elevation-750: #696151;
+  --theme-elevation-800: #5e5645;
+  --theme-elevation-850: #534b39;
+  --theme-elevation-900: #48402d;
+  --theme-elevation-950: #3d3521;
+  --theme-elevation-1000: #322a15;
+
+  --theme-success-50: #ecfdf5;
+  --theme-success-100: #d1fae5;
+  --theme-success-150: #a7f3d0;
+  --theme-success-200: #6ee7b7;
+  --theme-success-250: #34d399;
+  --theme-success-300: #10b981;
+  --theme-success-350: #059669;
+  --theme-success-400: #047857;
+  --theme-success-450: #065f46;
+  --theme-success-500: #064e3b;
+  --theme-success-550: #053f31;
+  --theme-success-600: #043028;
+  --theme-success-650: #03211f;
+  --theme-success-700: #021816;
+  --theme-success-750: #010f0e;
+  --theme-success-800: #000706;
+  --theme-success-850: #000403;
+  --theme-success-900: #000201;
+  --theme-success-950: #000100;
+
+  --theme-warning-50: #fffbeb;
+  --theme-error-50: #fef2f2;
+  --theme-error-500: #dc2626;
+
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+}
+
+html[data-theme='dark'] {
+  --theme-bg: #121212;
+  --theme-input-bg: #1a1a1a;
+  --theme-text: #f5f5f5;
+  --theme-elevation-0: #1a1a1a;
+  --theme-elevation-50: #222222;
+  --theme-elevation-100: #2a2a2a;
+  --theme-elevation-150: #333333;
+  --theme-elevation-200: #3b3b3b;
+}
+
+/* Boutons & liens primaires */
+.btn--style-primary,
+a.btn--style-primary {
+  --bg-color: var(--sogica-primary);
+  --box-shadow: 0 4px 14px color-mix(in srgb, var(--sogica-primary) 35%, transparent);
+}
+
+a[href].btn--style-primary:not(.btn--disabled):hover {
+  --bg-color: color-mix(in srgb, var(--sogica-primary) 88%, black);
+}
+
+.nav__link[aria-current='page'],
+.nav-group__toggle--open,
+.pill--style-white.pill--has-action:hover {
+  color: var(--sogica-primary);
+}
+
+/* Nav */
+.template-default__nav {
+  border-right: 1px solid var(--sogica-border);
+}
+
+.nav-group__label {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.sogica-admin-view-site {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.75rem 1rem 0;
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sogica-primary) 10%, white);
+  color: var(--sogica-primary) !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 1px solid color-mix(in srgb, var(--sogica-primary) 25%, transparent);
+}
+
+.sogica-admin-view-site:hover {
+  background: color-mix(in srgb, var(--sogica-primary) 16%, white);
+}
+
+/* Login */
+.sogica-admin-login-welcome {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--sogica-radius);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: #fff;
+}
+
+.sogica-admin-login-welcome__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sogica-accent);
+}
+
+.sogica-admin-login-welcome__title {
+  margin: 0 0 0.5rem;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.sogica-admin-login-welcome__text {
+  margin: 0;
+  color: rgb(255 255 255 / 0.82);
+  line-height: 1.55;
+}
+
+.sogica-admin-logo img {
+  max-height: 42px;
+  width: auto;
+}
+
+/* Dashboard welcome */
+.sogica-admin-welcome {
+  margin-bottom: 2rem;
+}
+
+.sogica-admin-welcome__hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  border-radius: var(--sogica-radius);
+  background:
+    linear-gradient(105deg, rgb(8 8 8 / 0.92) 0%, rgb(8 8 8 / 0.72) 55%, rgb(240 0 128 / 0.18) 100%),
+    #111;
+  color: #fff;
+}
+
+.sogica-admin-welcome__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sogica-accent);
+}
+
+.sogica-admin-welcome__title {
+  margin: 0 0 0.5rem;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.sogica-admin-welcome__lead {
+  margin: 0;
+  max-width: 52ch;
+  color: rgb(255 255 255 / 0.84);
+  line-height: 1.6;
+}
+
+.sogica-admin-welcome__replay {
+  appearance: none;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background: rgb(255 255 255 / 0.08);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sogica-admin-welcome__replay:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.sogica-admin-welcome__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.sogica-admin-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.15rem;
+  border-radius: var(--sogica-radius);
+  border: 1px solid var(--sogica-border);
+  background: var(--sogica-surface);
+  text-decoration: none !important;
+  color: inherit !important;
+  box-shadow: 0 4px 20px rgb(26 26 26 / 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.sogica-admin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgb(26 26 26 / 0.08);
+  border-color: color-mix(in srgb, var(--sogica-primary) 30%, var(--sogica-border));
+}
+
+.sogica-admin-card h2 {
+  margin: 0;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--sogica-text);
+}
+
+.sogica-admin-card p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--sogica-muted);
+}
+
+.sogica-admin-card__cta {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--sogica-primary);
+}
+
+.sogica-admin-card--accent {
+  border-top: 3px solid var(--sogica-accent);
+}
+
+.sogica-admin-card--primary {
+  border-top: 3px solid var(--sogica-primary);
+}
+
+.sogica-admin-welcome__hint {
+  margin: 1.25rem 0 0;
+  font-size: 0.9rem;
+  color: var(--sogica-muted);
+}
+
+/* Onboarding tour */
+.sogica-admin-tour {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.sogica-admin-tour__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(8 8 8 / 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.sogica-admin-tour__panel {
+  position: relative;
+  width: min(520px, 100%);
+  padding: 1.5rem 1.6rem 1.35rem;
+  border-radius: calc(var(--sogica-radius) + 4px);
+  background: var(--sogica-surface);
+  border: 1px solid var(--sogica-border);
+  box-shadow: 0 24px 60px rgb(8 8 8 / 0.22);
+}
+
+.sogica-admin-tour__progress {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.sogica-admin-tour__dot {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--sogica-border);
+}
+
+.sogica-admin-tour__dot.is-active {
+  background: var(--sogica-primary);
+}
+
+.sogica-admin-tour__step {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sogica-muted);
+}
+
+.sogica-admin-tour__title {
+  margin: 0 0 0.65rem;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.sogica-admin-tour__body {
+  margin: 0 0 1.25rem;
+  line-height: 1.6;
+  color: var(--sogica-muted);
+}
+
+.sogica-admin-tour__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sogica-admin-tour__actions-main {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Collection cards — titres plus lisibles */
+.dashboard .card-list .card h3 {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.sogica-admin-tour__panel--anchored {
+  position: fixed;
+  width: min(400px, calc(100vw - 2rem));
+  margin: 0;
+  z-index: 10002;
+}
+
+.sogica-admin-tour__highlight {
+  position: fixed;
+  z-index: 10001;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 2px var(--sogica-primary),
+    0 0 0 9999px rgb(8 8 8 / 0.55);
+  pointer-events: none;
+}
+
+.sogica-admin-tour__panel:not(.sogica-admin-tour__panel--anchored) {
+  position: relative;
+  z-index: 10002;
+}
+
+@media (max-width: 768px) {
+  .sogica-admin-welcome__hero {
+    padding: 1.15rem;
+  }
+
+  .sogica-admin-tour__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sogica-admin-tour__actions-main {
+    justify-content: flex-end;
+  }
 }

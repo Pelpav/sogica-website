@@ -1,10 +1,15 @@
 import type { Field } from 'payload'
+import { hideFromOwnerField } from '../access/roles'
 
 export const seoFields: Field[] = [
   {
     name: 'seo',
     type: 'group',
     label: 'SEO',
+    access: {
+      read: hideFromOwnerField,
+      update: hideFromOwnerField,
+    },
     fields: [
       { name: 'title', type: 'text', localized: true, label: 'Titre SEO' },
       { name: 'description', type: 'textarea', localized: true, label: 'Description SEO' },
@@ -29,6 +34,7 @@ export const slugField = (fieldToUse = 'title'): Field => ({
   admin: {
     position: 'sidebar',
     description: 'URL de la page',
+    condition: (_, __, { user }) => user?.role !== 'owner',
   },
   hooks: {
     beforeValidate: [

@@ -1,20 +1,21 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isEditor, publishedOnly } from '../access/roles'
+import { isAdmin, isContentEditor, publishedOnly } from '../access/roles'
 import { publicationFields, sourceNoteField } from '../fields/common'
 
 export const ClientsPartners: CollectionConfig = {
   slug: 'clients-partners',
   labels: { singular: 'Client / Partenaire', plural: 'Clients & partenaires' },
   admin: {
-    group: 'Contenu',
+    group: 'Pages & contenus',
+    description: 'Références clients et partenaires affichés sur le site.',
     useAsTitle: 'name',
     defaultColumns: ['name', 'type', 'featured', '_status'],
   },
   versions: { drafts: true },
   access: {
     read: publishedOnly,
-    create: isEditor,
-    update: isEditor,
+    create: isContentEditor,
+    update: isContentEditor,
     delete: isAdmin,
   },
   fields: [
@@ -62,14 +63,15 @@ export const Equipment: CollectionConfig = {
   slug: 'equipment',
   labels: { singular: 'Équipement', plural: 'Moyens matériels' },
   admin: {
-    group: 'Contenu',
+    group: 'Pages & contenus',
+    description: 'Liste des équipements et moyens matériels de l’entreprise.',
     useAsTitle: 'name',
     defaultColumns: ['name', 'category', 'quantity'],
   },
   access: {
     read: publishedOnly,
-    create: isEditor,
-    update: isEditor,
+    create: isContentEditor,
+    update: isContentEditor,
     delete: isAdmin,
   },
   fields: [

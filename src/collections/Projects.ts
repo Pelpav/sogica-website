@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isPortfolioManager, publishedOnly } from '../access/roles'
+import { isAdmin, isContentEditor, publishedOnly } from '../access/roles'
 import { publicationFields, seoFields, slugField } from '../fields/common'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { narrativeBlocks } from '../blocks/narrative'
@@ -8,17 +8,17 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   labels: { singular: 'Réalisation', plural: 'Réalisations' },
   admin: {
-    group: 'Portfolio',
+    group: 'Nos réalisations',
+    description:
+      'Publiez vos chantiers et projets avec photos et descriptions. Ne créez une réalisation que si un document source l’atteste.',
     useAsTitle: 'title',
     defaultColumns: ['title', 'year', 'country', '_status', 'featured'],
-    description:
-      'Créer une réalisation uniquement si un document source l\'atteste. Ne pas inférer depuis les visuels.',
   },
   versions: { drafts: { autosave: { interval: 300 } } },
   access: {
     read: publishedOnly,
-    create: isPortfolioManager,
-    update: isPortfolioManager,
+    create: isContentEditor,
+    update: isContentEditor,
     delete: isAdmin,
   },
   fields: [

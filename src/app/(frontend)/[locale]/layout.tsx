@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/layout/SiteFooter'
 import { InstantNavigation } from '@/components/theme/InstantNavigation'
 import { RouteProgressBar } from '@/components/theme/RouteProgressBar'
 import { SitePreloader } from '@/components/theme/SitePreloader'
+import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { getGlobal } from '@/lib/payload'
 import { localizedPath, isLocale, type Locale } from '@/lib/i18n'
@@ -68,6 +69,7 @@ async function LocaleLayoutContent({ children, params }: LayoutProps) {
           <RouteProgressBar />
         </Suspense>
         <SitePreloader />
+        <RefreshRouteOnSave />
         <ThemeProvider theme={theme} />
         <a href="#main" className="skip-link">
           {locale === 'fr' ? 'Aller au contenu' : 'Skip to content'}

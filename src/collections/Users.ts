@@ -7,7 +7,8 @@ export const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: 'email',
-    group: 'Administration',
+    group: 'Équipe & accès',
+    description: 'Comptes des personnes autorisées à modifier le site.',
   },
   access: {
     read: isAdmin,
@@ -22,6 +23,7 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: 'editor',
       options: [
+        { label: 'Propriétaire', value: 'owner' },
         { label: 'Super Admin', value: 'super-admin' },
         { label: 'Admin', value: 'admin' },
         { label: 'Éditeur', value: 'editor' },

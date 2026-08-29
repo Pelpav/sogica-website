@@ -55,7 +55,28 @@ export default buildConfig({
     },
 
     meta: {
-      titleSuffix: '| SOGICA CMS',
+      titleSuffix: ' · SOGICA',
+      description: 'Gérez le contenu du site SOGICA sans compétences techniques.',
+      icons: [{ url: '/brand/sogica-logo.png' }],
+    },
+
+    components: {
+      graphics: {
+        Logo: '/components/payload-admin/SogicaAdminLogo',
+        Icon: '/components/payload-admin/SogicaAdminIcon',
+      },
+      beforeDashboard: ['/components/payload-admin/SogicaWelcomePanel'],
+      beforeLogin: ['/components/payload-admin/SogicaLoginWelcome'],
+      afterNavLinks: ['/components/payload-admin/SogicaViewSiteLink'],
+    },
+
+    livePreview: {
+      breakpoints: [
+        { label: 'Mobile', name: 'mobile', width: 390, height: 844 },
+        { label: 'Tablette', name: 'tablet', width: 834, height: 1112 },
+        { label: 'Bureau', name: 'desktop', width: 1440, height: 900 },
+      ],
+      collections: ['pages'],
     },
   },
 

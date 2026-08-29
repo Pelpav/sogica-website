@@ -66,6 +66,25 @@ export async function findPageBySlug(slug: string, locale: Locale) {
   return page
 }
 
+export async function findPageBySlugLive(slug: string, locale: Locale) {
+  const { connection } = await import('next/server')
+  await connection()
+
+  const payload = await getPayloadClient()
+
+  return withDepthFallback(async (depth) => {
+    const result = await payload.find({
+      collection: 'pages',
+      locale,
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth,
+      draft: true,
+    })
+    return result.docs[0] ?? null
+  }, [3, 2, 1, 0])
+}
+
 export async function getGlobal<T extends keyof import('../payload-types').Config['globals']>(
   slug: T,
   locale: Locale,

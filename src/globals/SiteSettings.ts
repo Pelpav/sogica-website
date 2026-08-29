@@ -1,10 +1,14 @@
 import type { GlobalConfig } from 'payload'
-import { isAdmin, publicRead } from '../access/roles'
+import { isAdmin, isOwnerOrAdmin, publicRead } from '../access/roles'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
-  label: 'Paramètres du site',
-  access: { read: publicRead, update: isAdmin },
+  label: 'Coordonnées & SEO',
+  admin: {
+    group: 'Réglages du site',
+    description: 'Nom, adresse, téléphones, e-mails et référencement par défaut.',
+  },
+  access: { read: publicRead, update: isOwnerOrAdmin },
   fields: [
     {
       name: 'companyName',
@@ -64,6 +68,9 @@ export const SiteSettings: GlobalConfig = {
       name: 'defaultSeo',
       type: 'group',
       label: 'SEO par défaut',
+      admin: {
+        condition: (_, __, { user }) => user?.role !== 'owner',
+      },
       fields: [
         { name: 'title', type: 'text', localized: true },
         { name: 'description', type: 'textarea', localized: true },
@@ -81,7 +88,11 @@ export const SiteSettings: GlobalConfig = {
 
 export const LegalSettings: GlobalConfig = {
   slug: 'legal-settings',
-  label: 'Informations légales',
+  label: 'Mentions légales',
+  admin: {
+    group: 'Réglages du site',
+    description: 'Textes juridiques affichés sur le site.',
+  },
   access: { read: publicRead, update: isAdmin },
   fields: [
     { name: 'registrationNumber', type: 'text', label: 'Registre du Commerce' },

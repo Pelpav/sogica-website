@@ -172,7 +172,7 @@ async function main() {
     renameFileIfExists(path.join(PUBLIC_ROOT, `example${index + 1}.png`), path.join(PUBLIC_BRAND, nextName))
   }
 
-  renameFileIfExists(path.join(PUBLIC_MEDIA, 'loader.mp4'), path.join(PUBLIC_MEDIA, 'sogica-site-preloader.mp4'))
+  renameFileIfExists(path.join(PUBLIC_MEDIA, 'loader.mp4'), path.join(PUBLIC_BRAND, 'sogica-site-preloader.mp4'))
 
   console.log('Renommage public/media/uploads…')
   const renamedUploads = renameDirectoryFiles(UPLOADS_DIR, whatsAppMap)

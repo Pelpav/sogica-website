@@ -1,18 +1,19 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isAuthenticated, isAuthenticatedFieldLevel, isPortfolioManager, publicRead } from '../access/roles'
+import { isAdmin, isAuthenticated, isAuthenticatedFieldLevel, isContentEditor, isStaffFieldLevel, publicRead } from '../access/roles'
 
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Média', plural: 'Médias' },
   admin: {
-    group: 'Médias',
+    group: 'Photos & fichiers',
+    description: 'Ajoutez et organisez les photos, vidéos et documents du site.',
     useAsTitle: 'filename',
     defaultColumns: ['filename', 'mediaType', 'assignmentStatus', 'updatedAt'],
   },
   access: {
     read: publicRead,
     create: isAuthenticated,
-    update: isPortfolioManager,
+    update: isContentEditor,
     delete: isAdmin,
   },
   upload: {
@@ -130,7 +131,7 @@ export const Media: CollectionConfig = {
       name: 'internalNotes',
       type: 'textarea',
       label: 'Notes internes',
-      access: { read: isAuthenticatedFieldLevel, update: isAuthenticatedFieldLevel },
+      access: { read: isAuthenticatedFieldLevel, update: isStaffFieldLevel },
     },
   ],
   hooks: {

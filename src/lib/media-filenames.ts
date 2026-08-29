@@ -13,7 +13,7 @@ export const HERO_FALLBACK_FILENAMES = [
 ] as const
 
 export const HERO_FALLBACK_IMAGE = `/brand/${HERO_FALLBACK_FILENAMES[0]}`
-export const SITE_PRELOADER_PATH = '/media/sogica-site-preloader.mp4'
+export const SITE_PRELOADER_PATH = '/brand/sogica-site-preloader.mp4'
 
 const LEGACY_BRAND_RENAMES: Record<string, string> = {
   'logo.png': BRAND_LOGO_FILENAME,

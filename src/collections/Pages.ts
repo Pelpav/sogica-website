@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isEditor, publishedOnly } from '../access/roles'
+import { isAdmin, isContentEditor, publishedOnly } from '../access/roles'
 import { publicationFields, seoFields, slugField, sourceNoteField } from '../fields/common'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { pageBuilderBlocks } from '../blocks/pageBuilder'
@@ -8,15 +8,16 @@ export const Expertises: CollectionConfig = {
   slug: 'expertises',
   labels: { singular: 'Expertise', plural: 'Expertises' },
   admin: {
-    group: 'Contenu',
+    group: 'Pages & contenus',
+    description: 'Gérez les domaines d’expertise affichés sur le site.',
     useAsTitle: 'name',
     defaultColumns: ['name', 'featured', 'sortOrder', '_status'],
   },
   versions: { drafts: { autosave: { interval: 300 } } },
   access: {
     read: publishedOnly,
-    create: isEditor,
-    update: isEditor,
+    create: isContentEditor,
+    update: isContentEditor,
     delete: isAdmin,
   },
   fields: [
@@ -65,7 +66,7 @@ export const Expertises: CollectionConfig = {
       type: 'checkbox',
       label: 'Domaine principal',
       defaultValue: false,
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', condition: (_, __, { user }) => user?.role !== 'owner' },
     },
     ...publicationFields,
     {
@@ -84,22 +85,23 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Page', plural: 'Pages' },
   admin: {
-    group: 'Contenu',
+    group: 'Pages & contenus',
+    description: 'Modifiez les pages du site : accueil, à propos, contact, etc.',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
     livePreview: {
       url: ({ data, locale }) => {
         const loc = locale?.code ?? 'fr'
         const slug = data?.slug === 'home' ? '' : `/${data?.slug}`
-        return `${process.env.NEXT_PUBLIC_SITE_URL}/${loc}${slug}`
+        return `/${loc}${slug}?livePreview=1`
       },
     },
   },
   versions: { drafts: { autosave: { interval: 300 } } },
   access: {
     read: publishedOnly,
-    create: isEditor,
-    update: isEditor,
+    create: isContentEditor,
+    update: isContentEditor,
     delete: isAdmin,
   },
   fields: [
@@ -123,14 +125,14 @@ export const Pages: CollectionConfig = {
         { label: 'Devis', value: 'quote' },
         { label: 'Légal', value: 'legal' },
       ],
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', condition: (_, __, { user }) => user?.role !== 'owner' },
     },
     {
       name: 'showInNav',
       type: 'checkbox',
       label: 'Visible dans la navigation',
       defaultValue: true,
-      admin: { position: 'sidebar' },
+      admin: { position: 'sidebar', condition: (_, __, { user }) => user?.role !== 'owner' },
     },
     {
       name: 'layout',

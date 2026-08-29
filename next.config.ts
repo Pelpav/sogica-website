@@ -18,6 +18,27 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  async headers() {
+    return [
+      {
+        source: '/brand/:path*.mp4',
+        headers: [
+          { key: 'Content-Type', value: 'video/mp4' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "frame-ancestors 'self' http://localhost:3000 https://www.sogica.ml https://*.vercel.app",
+          },
+        ],
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {

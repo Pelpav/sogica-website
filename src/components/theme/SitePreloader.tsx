@@ -1,9 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { SITE_PRELOADER_PATH } from '@/lib/media-filenames'
+import { BRAND_LOGO_PATH, SITE_PRELOADER_PATH } from '@/lib/media-filenames'
 
-const STORAGE_KEY = 'sogica-preloader-v1'
+const STORAGE_KEY = 'sogica-preloader-v2'
 const MIN_MS = 1800
 const MAX_MS = 9000
 
@@ -13,6 +13,7 @@ export function SitePreloader() {
   const [done, setDone] = useState(false)
   const [entered, setEntered] = useState(false)
   const [progress, setProgress] = useState(6)
+  const [videoFailed, setVideoFailed] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const startedAt = useRef(0)
   const finished = useRef(false)
@@ -67,7 +68,7 @@ export function SitePreloader() {
   }, [])
 
   useEffect(() => {
-    if (!visible) return
+    if (!visible || videoFailed) return
 
     const video = videoRef.current
     const maxTimer = window.setTimeout(finish, MAX_MS)
@@ -81,6 +82,7 @@ export function SitePreloader() {
     const tryPlay = () => {
       if (!video) return
       void video.play().catch(() => {
+        setVideoFailed(true)
         window.setTimeout(finish, MIN_MS)
       })
     }
@@ -99,7 +101,7 @@ export function SitePreloader() {
       video.removeEventListener('loadeddata', tryPlay)
       video.removeEventListener('timeupdate', onVideoProgress)
     }
-  }, [visible, finish])
+  }, [visible, finish, videoFailed])
 
   if (done || !visible) return null
 
@@ -119,15 +121,29 @@ export function SitePreloader() {
       <div className="site-preloader__glow site-preloader__glow--right" aria-hidden />
 
       <div className="site-preloader__frame">
-        <video
-          ref={videoRef}
-          className="site-preloader__video"
-          src={SITE_PRELOADER_PATH}
-          muted
-          playsInline
-          preload="auto"
-          onEnded={finish}
-        />
+        {videoFailed ? (
+          <img
+            className="site-preloader__video site-preloader__fallback"
+            src={BRAND_LOGO_PATH}
+            alt="SOGICA"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            className="site-preloader__video"
+            src={SITE_PRELOADER_PATH}
+            poster={BRAND_LOGO_PATH}
+            muted
+            autoPlay
+            playsInline
+            preload="auto"
+            onEnded={finish}
+            onError={() => {
+              setVideoFailed(true)
+              window.setTimeout(finish, MIN_MS)
+            }}
+          />
+        )}
         <div className="site-preloader__vignette" aria-hidden />
         <div className="site-preloader__scanline" aria-hidden />
       </div>

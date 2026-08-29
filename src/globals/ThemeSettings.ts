@@ -3,7 +3,11 @@ import { isAdmin, canManageThemeCSS, publicRead } from '../access/roles'
 
 export const ThemeSettings: GlobalConfig = {
   slug: 'theme-settings',
-  label: 'Thème & design',
+  label: 'Couleurs & apparence',
+  admin: {
+    group: 'Réglages du site',
+    description: 'Couleurs, polices et style visuel du site public.',
+  },
   access: { read: publicRead, update: isAdmin },
   fields: [
     {
@@ -71,7 +75,11 @@ export const ThemeSettings: GlobalConfig = {
 
 export const Header: GlobalConfig = {
   slug: 'header',
-  label: 'En-tête',
+  label: 'Menu du site',
+  admin: {
+    group: 'Réglages du site',
+    description: 'Logo et liens de navigation en haut de page.',
+  },
   access: { read: publicRead, update: isAdmin },
   fields: [
     { name: 'logo', type: 'upload', relationTo: 'media', label: 'Logo' },
@@ -111,6 +119,10 @@ export const Header: GlobalConfig = {
 export const Footer: GlobalConfig = {
   slug: 'footer',
   label: 'Pied de page',
+  admin: {
+    group: 'Réglages du site',
+    description: 'Liens et textes affichés en bas de chaque page.',
+  },
   access: { read: publicRead, update: isAdmin },
   fields: [
     {
