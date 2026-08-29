@@ -32,7 +32,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   const enabled = !isLegalRoute(pathname)
 
   useEffect(() => {
-    return scheduleIdleWork(() => setMounted(true), { timeout: 1800, fallbackMs: 400 })
+    return scheduleIdleWork(() => setMounted(true), { timeout: 8000, fallbackMs: 5000 })
   }, [])
 
   return <MotionContext.Provider value={{ enabled, mounted }}>{children}</MotionContext.Provider>

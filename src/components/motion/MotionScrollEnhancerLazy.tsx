@@ -14,7 +14,7 @@ export function MotionScrollEnhancerLazy() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    return scheduleIdleWork(() => setReady(true), { timeout: 2500, fallbackMs: 1200 })
+    return scheduleIdleWork(() => setReady(true), { timeout: 8000, fallbackMs: 5000 })
   }, [])
 
   if (!ready) return null

@@ -20,6 +20,7 @@ import type { Media as MediaType } from '@/payload-types'
 import type { PageBlock } from './BlockRenderer'
 import { serializeLexical } from '@/lib/serialize-lexical'
 
+import { HeroImagePreload } from '@/components/seo/HeroImagePreload'
 import { HeroLcpImage } from '@/components/seo/HeroLcpImage'
 import { HERO_FALLBACK_IMAGE } from '@/lib/media-filenames'
 
@@ -65,6 +66,7 @@ export function HeroBlock({
   if (layout === 'construktion') {
     return (
       <section className="hero-construktion" data-hero-overlay>
+        {priority ? <HeroImagePreload src={imageSrc} /> : null}
         <div className="container-site hero-construktion__grid">
           <div className="hero-construktion__copy">
             {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}

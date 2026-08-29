@@ -1,13 +1,8 @@
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
-import { InstantNavigation } from '@/components/theme/InstantNavigation'
-import { RouteProgressBar } from '@/components/theme/RouteProgressBar'
-import { SitePreloader } from '@/components/theme/SitePreloader'
-import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
+import { DeferredLayoutClient } from '@/components/layout/DeferredLayoutClient'
 import { PageTransitionShell } from '@/components/theme/PageTransitionShell'
-import { MotionProvider } from '@/components/motion/MotionProvider'
-import { MotionScrollEnhancerLazy } from '@/components/motion/MotionScrollEnhancerLazy'
 import { MediaPreconnect } from '@/components/seo/MediaPreconnect'
 import {
   LocaleFooterSlot,
@@ -63,19 +58,7 @@ type LayoutProps = {
   params: Promise<{ locale: string }>
 }
 
-function LocaleLayoutFallback({ children }: { children: ReactNode }) {
-  return (
-    <html lang="fr" className={fontClasses} data-scroll-behavior="smooth">
-      <body>
-        <main id="main" className="site-main">
-          {children}
-        </main>
-      </body>
-    </html>
-  )
-}
-
-async function LocaleLayoutShell({ children, params }: LayoutProps) {
+export default async function LocaleLayout({ children, params }: LayoutProps) {
   const locale = await resolveLayoutLocale(params)
 
   return (
@@ -84,44 +67,27 @@ async function LocaleLayoutShell({ children, params }: LayoutProps) {
         <MediaPreconnect />
       </head>
       <body>
-        <Suspense fallback={null}>
-          <InstantNavigation />
-        </Suspense>
-        <Suspense fallback={null}>
-          <RouteProgressBar />
-        </Suspense>
-        <SitePreloader />
-        <MotionProvider>
-          <MotionScrollEnhancerLazy />
-        <RefreshRouteOnSave />
-        <Suspense fallback={null}>
-          <LocaleJsonLdSlot params={params} />
-        </Suspense>
-        <Suspense fallback={null}>
-          <LocaleThemeSlot params={params} />
-        </Suspense>
-        <a href="#main" className="skip-link">
-          {locale === 'fr' ? 'Aller au contenu' : 'Skip to content'}
-        </a>
-        <Suspense fallback={<LocaleHeaderFallback locale={locale} />}>
-          <LocaleHeaderSlot params={params} />
-        </Suspense>
-        <main id="main" className="site-main">
-          <PageTransitionShell>{children}</PageTransitionShell>
-        </main>
-        <Suspense fallback={null}>
-          <LocaleFooterSlot params={params} />
-        </Suspense>
-        </MotionProvider>
+        <DeferredLayoutClient>
+          <Suspense fallback={null}>
+            <LocaleJsonLdSlot params={params} />
+          </Suspense>
+          <Suspense fallback={null}>
+            <LocaleThemeSlot params={params} />
+          </Suspense>
+          <a href="#main" className="skip-link">
+            {locale === 'fr' ? 'Aller au contenu' : 'Skip to content'}
+          </a>
+          <Suspense fallback={<LocaleHeaderFallback locale={locale} />}>
+            <LocaleHeaderSlot params={params} />
+          </Suspense>
+          <main id="main" className="site-main">
+            <PageTransitionShell>{children}</PageTransitionShell>
+          </main>
+          <Suspense fallback={null}>
+            <LocaleFooterSlot params={params} />
+          </Suspense>
+        </DeferredLayoutClient>
       </body>
     </html>
-  )
-}
-
-export default function LocaleLayout({ children, params }: LayoutProps) {
-  return (
-    <Suspense fallback={<LocaleLayoutFallback>{children}</LocaleLayoutFallback>}>
-      <LocaleLayoutShell params={params}>{children}</LocaleLayoutShell>
-    </Suspense>
   )
 }
