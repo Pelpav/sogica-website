@@ -4,10 +4,18 @@ import {
   generateProjectDetailMetadata,
 } from '@/components/pages/project-detail-page'
 import { ProjectDetailPageSkeleton } from '@/components/layout/skeletons/project-detail-skeleton'
+import { fetchProjects } from '@/lib/cms-queries'
 import { isLocale } from '@/lib/i18n'
 import { PageSuspense } from '@/lib/page-suspense'
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
+
+export async function generateStaticParams() {
+  const { docs } = await fetchProjects('fr', 100)
+  return docs
+    .filter((doc) => doc.slug)
+    .map((doc) => ({ locale: 'fr', slug: doc.slug! }))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params

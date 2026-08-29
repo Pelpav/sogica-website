@@ -6,14 +6,13 @@ import { buildBreadcrumbJsonLd, buildPageMetadata } from '@/lib/seo'
 import { CmsImage } from '@/components/media/CmsMedia'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
-import { fetchExpertises } from '@/lib/cms-queries'
+import { fetchExpertises, fetchExpertiseBySlug } from '@/lib/cms-queries'
 import { resolveExpertiseCover } from '@/lib/cms-media'
 import {
   getExpertiseDetailFallback,
   getExpertiseDetailLabels,
 } from '@/lib/expertise-content'
 import { isLocale, localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
-import { getPayloadClient } from '@/lib/payload'
 import { hasLexicalContent } from '@/lib/legal-content'
 import { serializeLexical } from '@/lib/serialize-lexical'
 import type { Media as MediaType, Project } from '@/payload-types'
@@ -24,15 +23,7 @@ export async function generateExpertiseDetailMetadata(
   locale: Locale,
   slug: string,
 ): Promise<Metadata> {
-  const payload = await getPayloadClient()
-  const result = await payload.find({
-    collection: 'expertises',
-    locale,
-    where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
-    limit: 1,
-    depth: 1,
-  })
-  const expertise = result.docs[0]
+  const expertise = await fetchExpertiseBySlug(slug, locale)
   if (!expertise) {
     return buildPageMetadata({
       locale,
@@ -59,19 +50,10 @@ export async function ExpertiseDetailPage({ params }: Props) {
   if (!isLocale(localeParam)) notFound()
   const locale = localeParam
 
-  const payload = await getPayloadClient()
-  const [result, { docs: allExpertises }] = await Promise.all([
-    payload.find({
-      collection: 'expertises',
-      locale,
-      where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
-      limit: 1,
-      depth: 2,
-    }),
+  const [{ docs: allExpertises }, expertise] = await Promise.all([
     fetchExpertises(locale),
+    fetchExpertiseBySlug(slug, locale),
   ])
-
-  const expertise = result.docs[0]
   if (!expertise) notFound()
 
   const labels = getExpertiseDetailLabels(locale)

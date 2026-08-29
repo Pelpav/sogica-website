@@ -7,10 +7,10 @@ import {
   getClientsIndexContent,
   type ClientPartnerType,
 } from '@/lib/clients-content'
+import { fetchClientsPartners } from '@/lib/cms-queries'
 import { localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import { getPartnerLogoPath } from '@/lib/partner-logos'
 import { getMediaUrl } from '@/lib/media-url'
-import { getPayloadClient } from '@/lib/payload'
 import { requireLocale } from '@/lib/page-locale'
 import type { ClientsPartner, Media as MediaType } from '@/payload-types'
 
@@ -55,15 +55,7 @@ export async function generateClientsMetadata(locale: Locale): Promise<Metadata>
 export async function ClientsPage({ params }: Props) {
   const locale = await requireLocale(params)
   const content = getClientsIndexContent(locale)
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'clients-partners',
-    locale,
-    where: { _status: { equals: 'published' } },
-    sort: 'sortOrder',
-    limit: 48,
-    depth: 1,
-  })
+  const { docs } = await fetchClientsPartners(locale, { featuredOnly: false, limit: 48 })
 
   const carouselItems = docs
     .map((client) => {

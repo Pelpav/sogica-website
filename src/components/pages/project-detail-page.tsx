@@ -9,8 +9,8 @@ import { NarrativeRenderer } from '@/components/portfolio/NarrativeRenderer'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
 import { isLocale, localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
+import { fetchProjectBySlug, fetchRelatedProjectsForProject } from '@/lib/cms-queries'
 import { hasLexicalContent } from '@/lib/legal-content'
-import { getPayloadClient } from '@/lib/payload'
 import {
   formatProjectPeriod,
   getProjectDetailLabels,
@@ -31,15 +31,7 @@ export async function generateProjectDetailMetadata(
   locale: Locale,
   slug: string,
 ): Promise<Metadata> {
-  const payload = await getPayloadClient()
-  const result = await payload.find({
-    collection: 'projects',
-    locale,
-    where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
-    limit: 1,
-    depth: 1,
-  })
-  const project = result.docs[0]
+  const project = await fetchProjectBySlug(slug, locale)
   if (!project) {
     return buildPageMetadata({
       locale,
@@ -77,27 +69,11 @@ async function fetchRelatedProjects(project: Project, locale: Locale): Promise<P
 
   const expertiseIds = (project.expertises || [])
     .map((item) => (typeof item === 'object' && item ? item.id : item))
-    .filter(Boolean)
+    .filter((id): id is number => typeof id === 'number')
 
-  if (!expertiseIds.length) return []
+  if (!expertiseIds.length || typeof project.id !== 'number') return []
 
-  const payload = await getPayloadClient()
-  const { docs } = await payload.find({
-    collection: 'projects',
-    locale,
-    where: {
-      and: [
-        { _status: { equals: 'published' } },
-        { id: { not_equals: project.id } },
-        { expertises: { in: expertiseIds } },
-      ],
-    },
-    limit: 3,
-    depth: 1,
-    sort: '-year',
-  })
-
-  return docs
+  return fetchRelatedProjectsForProject(project.id, expertiseIds, locale)
 }
 
 export async function ProjectDetailPage({ params }: Props) {
@@ -105,16 +81,7 @@ export async function ProjectDetailPage({ params }: Props) {
   if (!isLocale(localeParam)) notFound()
   const locale = localeParam
 
-  const payload = await getPayloadClient()
-  const result = await payload.find({
-    collection: 'projects',
-    locale,
-    where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
-    limit: 1,
-    depth: 3,
-  })
-
-  const project = result.docs[0]
+  const project = await fetchProjectBySlug(slug, locale)
   if (!project) notFound()
 
   const labels = getProjectDetailLabels(locale)

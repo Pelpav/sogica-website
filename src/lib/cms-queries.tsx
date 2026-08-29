@@ -87,8 +87,12 @@ export async function fetchProjectMapPoints(locale: Locale, limit = 100): Promis
     }))
 }
 
-export async function fetchClientsPartners(locale: Locale, featuredOnly = true) {
+export async function fetchClientsPartners(
+  locale: Locale,
+  options: { featuredOnly?: boolean; limit?: number } = {},
+) {
   'use cache'
+  const { featuredOnly = true, limit = 24 } = options
   tagCollection('clients-partners', locale)
   cacheLife('hours')
 
@@ -103,9 +107,77 @@ export async function fetchClientsPartners(locale: Locale, featuredOnly = true) 
       ],
     },
     sort: 'sortOrder',
-    limit: 24,
+    limit,
     depth: 1,
   })
+}
+
+export async function fetchExpertiseBySlug(slug: string, locale: Locale) {
+  'use cache'
+  tagCollection('expertises', locale)
+  cacheTag('cms', `cms-expertise-${slug}-${locale}`)
+  cacheLife('hours')
+
+  const payload = await getPayloadClient()
+  const result = await payload.find({
+    collection: 'expertises',
+    locale,
+    where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
+    limit: 1,
+    depth: 2,
+  })
+
+  return result.docs[0] ?? null
+}
+
+export async function fetchProjectBySlug(slug: string, locale: Locale) {
+  'use cache'
+  tagCollection('projects', locale)
+  cacheTag('cms', `cms-project-${slug}-${locale}`)
+  cacheLife('hours')
+
+  const payload = await getPayloadClient()
+  const result = await payload.find({
+    collection: 'projects',
+    locale,
+    where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
+    limit: 1,
+    depth: 2,
+  })
+
+  return result.docs[0] ?? null
+}
+
+export async function fetchRelatedProjectsForProject(
+  projectId: number,
+  expertiseIds: number[],
+  locale: Locale,
+  limit = 3,
+) {
+  'use cache'
+  tagCollection('projects', locale)
+  cacheTag('cms', `cms-project-related-${projectId}-${locale}`)
+  cacheLife('hours')
+
+  if (!expertiseIds.length) return []
+
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'projects',
+    locale,
+    where: {
+      and: [
+        { _status: { equals: 'published' } },
+        { id: { not_equals: projectId } },
+        { expertises: { in: expertiseIds } },
+      ],
+    },
+    limit,
+    depth: 1,
+    sort: '-year',
+  })
+
+  return docs
 }
 
 export async function fetchEquipment(locale: Locale) {

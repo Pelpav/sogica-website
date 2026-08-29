@@ -392,7 +392,7 @@ export function ClientsBlock({ block, locale }: { block: PageBlock; locale: Loca
 }
 
 async function ClientsInner({ block, locale }: { block: PageBlock; locale: Locale }) {
-  const { docs } = await fetchClientsPartners(locale, block.featuredOnly !== false)
+  const { docs } = await fetchClientsPartners(locale, { featuredOnly: block.featuredOnly !== false })
 
   if (!docs.length) return null
 

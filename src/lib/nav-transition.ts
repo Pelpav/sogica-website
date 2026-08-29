@@ -28,6 +28,10 @@ function pathSegments(pathname: string): string[] {
   return parts.length > 0 && isLocale(parts[0]) ? parts.slice(1) : parts
 }
 
+function isDetailPath(pathname: string): boolean {
+  return pathSegments(pathname).length > 1
+}
+
 function getNavPosition(pathname: string): number {
   const segments = pathSegments(pathname)
 
@@ -40,11 +44,13 @@ function getNavPosition(pathname: string): number {
   return base + (segments.length - 1)
 }
 
-/** Swipe gauche/droite selon la position dans la navigation (ou la profondeur pour les pages détail). */
+/** Swipe gauche/droite selon la position dans la navigation (pages index uniquement). */
 export function getNavTransitionType(
   targetHref: string,
   pathname: string,
 ): NavTransitionType | undefined {
+  if (isDetailPath(targetHref) || isDetailPath(pathname)) return undefined
+
   const from = getNavPosition(pathname)
   const to = getNavPosition(targetHref)
 
