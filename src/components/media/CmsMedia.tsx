@@ -23,7 +23,7 @@ export function CmsImage({
   if (!url) return null
 
   const resolvedAlt = alt ?? getMediaAlt(media as MediaType, '')
-  const imageQuality = quality ?? (priority ? 75 : 60)
+  const imageQuality = quality ?? (priority ? 75 : 50)
 
   if (fill) {
     return (

@@ -5,8 +5,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { BRAND_LOGO_UI_PATH, SITE_PRELOADER_PATH } from '@/lib/media-filenames'
 
 const STORAGE_KEY = 'sogica-preloader-v3'
-const MIN_MS = 1800
-const MAX_MS = 9000
+const MIN_MS = 600
+const MAX_MS = 6000
 
 export function SitePreloader() {
   const [visible, setVisible] = useState(false)
@@ -23,7 +23,9 @@ export function SitePreloader() {
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const mobile = window.matchMedia('(max-width: 768px)').matches
-    if (reduceMotion || sessionStorage.getItem(STORAGE_KEY) === '1') {
+    const saveData = 'connection' in navigator && (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+
+    if (reduceMotion || mobile || saveData || sessionStorage.getItem(STORAGE_KEY) === '1') {
       setDone(true)
       return
     }
@@ -31,15 +33,6 @@ export function SitePreloader() {
     startedAt.current = Date.now()
     setVisible(true)
     document.documentElement.classList.add('preloader-active')
-
-    const header = document.querySelector<HTMLElement>('.site-header')
-    const main = document.getElementById('main')
-    if (header) header.inert = true
-    if (main) main.inert = true
-
-    if (mobile) {
-      setVideoFailed(true)
-    }
 
     const enterTimer = window.setTimeout(() => setEntered(true), 40)
     return () => window.clearTimeout(enterTimer)
@@ -71,11 +64,6 @@ export function SitePreloader() {
       setExiting(true)
       sessionStorage.setItem(STORAGE_KEY, '1')
       document.documentElement.classList.remove('preloader-active')
-
-      const header = document.querySelector<HTMLElement>('.site-header')
-      const main = document.getElementById('main')
-      if (header) header.inert = false
-      if (main) main.inert = false
 
       window.setTimeout(() => {
         setVisible(false)

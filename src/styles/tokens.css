@@ -1,5 +1,7 @@
 :root {
   --color-primary: #f00080;
+  --color-primary-strong: #b80062;
+  --color-primary-text: #9e0054;
   --color-primary-soft: color-mix(in srgb, var(--color-primary) 12%, white);
   --color-secondary: #1e1e1e;
   --color-accent: #d4af37;

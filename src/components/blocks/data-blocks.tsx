@@ -310,7 +310,7 @@ async function FeaturedProjectsInner({ block, locale }: { block: PageBlock; loca
             className="project-spotlight group"
           >
             <div className="project-spotlight__media">
-              <CmsImage media={spotlight.coverImage} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 66vw" />
+              <CmsImage media={spotlight.coverImage} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 66vw" quality={50} />
               <div className="project-spotlight__shade" />
               <div className="project-spotlight__body">
                 <p className="project-spotlight__meta">

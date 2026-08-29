@@ -198,14 +198,14 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
   }
 
   .eyebrow::before {
     content: '';
     width: 1.5rem;
     height: 2px;
-    background: var(--color-primary);
+    background: var(--color-primary-text);
   }
 
   .section-block[data-tone='brand'] .eyebrow {
@@ -1587,14 +1587,14 @@
   }
 
   .btn-primary {
-    background: var(--color-primary);
+    background: var(--color-primary-strong);
     color: white;
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--color-primary-strong);
   }
 
   .btn-primary:hover {
-    background: color-mix(in srgb, var(--color-primary) 90%, black);
-    border-color: color-mix(in srgb, var(--color-primary) 90%, black);
+    background: color-mix(in srgb, var(--color-primary-strong) 90%, black);
+    border-color: color-mix(in srgb, var(--color-primary-strong) 90%, black);
   }
 
   .btn-outline {
@@ -1626,7 +1626,7 @@
 
   .btn-white {
     background: white;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
     border: 2px solid white;
   }
 
@@ -2252,7 +2252,7 @@
   }
 
   .site-footer__cta-band {
-    background: var(--color-primary);
+    background: var(--color-primary-strong);
     color: white;
     padding-block: 2.5rem;
   }
@@ -2275,7 +2275,7 @@
   .site-footer__cta-desc {
     margin-top: 0.5rem;
     font-size: 0.9375rem;
-    color: rgb(255 255 255 / 0.85);
+    color: rgb(255 255 255 / 0.95);
     max-width: 36rem;
   }
 
@@ -2349,8 +2349,9 @@
   }
 
   .site-footer__credit-link {
-    color: rgba(255, 255, 255, 0.72);
-    text-decoration: none;
+    color: rgb(255 255 255 / 0.88);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
     transition: color 0.2s;
   }
 

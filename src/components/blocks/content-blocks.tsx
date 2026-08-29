@@ -20,6 +20,7 @@ import type { Media as MediaType } from '@/payload-types'
 import type { PageBlock } from './BlockRenderer'
 import { serializeLexical } from '@/lib/serialize-lexical'
 
+import { HeroImagePreload } from '@/components/seo/HeroImagePreload'
 import { HERO_FALLBACK_IMAGE } from '@/lib/media-filenames'
 
 function txt(value: unknown): string {
@@ -64,8 +65,9 @@ export function HeroBlock({
   if (layout === 'construktion') {
     return (
       <section className="hero-construktion" data-hero-overlay>
+        {priority ? <HeroImagePreload src={imageSrc} /> : null}
         <div className="container-site hero-construktion__grid">
-          <RevealStagger className="hero-construktion__copy" stagger={0.12}>
+          <div className="hero-construktion__copy">
             {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
             <h1 className="display-title mt-4">{txt(block.title)}</h1>
             {txt(block.subtitle) ? <p className="lead-text mt-5 max-w-xl">{txt(block.subtitle)}</p> : null}
@@ -80,7 +82,7 @@ export function HeroBlock({
                 {secondaryCta?.label || (locale === 'fr' ? 'En savoir plus' : 'Learn more')}
               </SiteLink>
             </div>
-          </RevealStagger>
+          </div>
           <div className="hero-construktion__media card overflow-hidden">
             <Image
               src={imageSrc}
