@@ -1,12 +1,24 @@
 'use client'
 
 import { NavigationContentShell } from '@/components/theme/NavigationContentShell'
-import type { ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
+
+function PageTransitionFallback({ children }: { children: ReactNode }) {
+  return (
+    <div className="navigation-content-shell">
+      <div className="navigation-content-shell__page" data-page-transition>
+        {children}
+      </div>
+    </div>
+  )
+}
 
 export function PageTransitionShell({ children }: { children: ReactNode }) {
   return (
     <div className="page-transition-shell">
-      <NavigationContentShell>{children}</NavigationContentShell>
+      <Suspense fallback={<PageTransitionFallback>{children}</PageTransitionFallback>}>
+        <NavigationContentShell>{children}</NavigationContentShell>
+      </Suspense>
     </div>
   )
 }

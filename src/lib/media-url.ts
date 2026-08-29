@@ -1,6 +1,5 @@
 import type { Media as MediaType } from '@/payload-types'
 import {
-  BRAND_LOGO_PATH,
   BRAND_LOGO_WHITE_PATH,
   BRAND_LOGO_FILENAME,
   BRAND_LOGO_WHITE_FILENAME,

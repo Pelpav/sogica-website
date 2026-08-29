@@ -1,17 +1,10 @@
-import { Suspense, type ComponentType, type ReactNode } from 'react'
-import { PageContentSkeleton } from '@/components/layout/PageContentSkeleton'
+import { Suspense, type ReactNode } from 'react'
 
-type PageProps = { params: Promise<Record<string, string | string[] | undefined>> }
+type PageSuspenseProps = {
+  fallback: ReactNode
+  children: ReactNode
+}
 
-export function withPageSuspense<P extends PageProps>(
-  Page: ComponentType<P>,
-  fallback: ReactNode = <PageContentSkeleton />,
-) {
-  return function PageWithSuspense(props: P) {
-    return (
-      <Suspense fallback={fallback}>
-        <Page {...props} />
-      </Suspense>
-    )
-  }
+export function PageSuspense({ fallback, children }: PageSuspenseProps) {
+  return <Suspense fallback={fallback}>{children}</Suspense>
 }

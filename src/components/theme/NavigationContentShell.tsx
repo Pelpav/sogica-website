@@ -1,6 +1,5 @@
 'use client'
 
-import { PageContentSkeleton } from '@/components/layout/PageContentSkeleton'
 import { getNavTransitionType } from '@/lib/nav-transition'
 import { usePathname } from 'next/navigation'
 import {
@@ -32,12 +31,18 @@ function pathMatchesTarget(pathname: string, target: string) {
 
 function isPageSkeleton(node: ReactNode) {
   if (!isValidElement(node)) return false
-  if (node.type === PageContentSkeleton) return true
 
-  const props = node.props as { children?: ReactNode; 'data-page-skeleton'?: boolean }
+  const props = node.props as { children?: ReactNode; 'data-page-skeleton'?: boolean; className?: string }
   if (props['data-page-skeleton']) return true
+  if (typeof props.className === 'string' && props.className.includes('page-skeleton')) return true
 
   return Children.toArray(props.children).some(isPageSkeleton)
+}
+
+function hasRenderableContent(node: ReactNode) {
+  if (node == null || node === false) return false
+  if (isPageSkeleton(node)) return false
+  return true
 }
 
 function setNavTransitionDirection(fromPath: string, toPath: string) {
@@ -53,14 +58,21 @@ function setNavTransitionDirection(fromPath: string, toPath: string) {
 }
 
 function commitWithTransition(callback: () => void) {
+  const root = document.documentElement
+
   if (typeof document !== 'undefined' && 'startViewTransition' in document) {
-    document.startViewTransition(() => {
+    const transition = document.startViewTransition(() => {
       flushSync(callback)
+    })
+
+    void transition.finished.finally(() => {
+      delete root.dataset.navTransition
     })
     return
   }
 
   callback()
+  delete root.dataset.navTransition
 }
 
 export function NavigationContentShell({ children }: { children: ReactNode }) {
@@ -69,11 +81,11 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
   const committedPath = useRef(pathname)
   const frozenChildren = useRef<ReactNode>(children)
   const navigationTarget = useRef<string | null>(null)
-  const hasRealContent = useRef(!isPageSkeleton(children))
+  const hasRealContent = useRef(hasRenderableContent(children))
 
   useEffect(() => {
     if (isNavigating) return
-    if (isPageSkeleton(children)) return
+    if (!hasRenderableContent(children)) return
 
     frozenChildren.current = children
     committedPath.current = pathname
@@ -82,7 +94,7 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (pathname === committedPath.current || isNavigating) return
-    if (!hasRealContent.current || isPageSkeleton(frozenChildren.current)) return
+    if (!hasRealContent.current || !hasRenderableContent(frozenChildren.current)) return
 
     setNavTransitionDirection(committedPath.current, pathname)
     navigationTarget.current = pathname
@@ -91,7 +103,7 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const beginNavigation = (targetPath: string) => {
-      if (!hasRealContent.current || isPageSkeleton(frozenChildren.current)) return
+      if (!hasRealContent.current || !hasRenderableContent(frozenChildren.current)) return
       setNavTransitionDirection(pathname, targetPath)
       navigationTarget.current = targetPath
       setIsNavigating(true)
@@ -129,7 +141,7 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
 
     const target = navigationTarget.current
     if (!target || !pathMatchesTarget(pathname, target)) return
-    if (isPageSkeleton(children)) return
+    if (!hasRenderableContent(children)) return
 
     commitWithTransition(() => {
       frozenChildren.current = children
@@ -141,24 +153,21 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
     })
   }, [children, pathname, isNavigating])
 
-  useEffect(() => {
-    if (isNavigating) return
-    delete document.documentElement.dataset.navTransition
-  }, [isNavigating, pathname])
+  const awaitingContent =
+    pathname !== committedPath.current || !hasRenderableContent(children)
 
   const canHoldPreviousPage =
-    isNavigating && hasRealContent.current && !isPageSkeleton(frozenChildren.current)
+    hasRealContent.current &&
+    hasRenderableContent(frozenChildren.current) &&
+    (isNavigating || awaitingContent)
 
-  const visibleChildren =
-    canHoldPreviousPage || (isNavigating && isPageSkeleton(children))
-      ? frozenChildren.current
-      : children
+  const visibleChildren = canHoldPreviousPage ? frozenChildren.current : children
 
   return (
     <div
       className="navigation-content-shell"
       data-navigating={isNavigating ? 'true' : 'false'}
-      aria-busy={isNavigating ? 'true' : undefined}
+      aria-busy={isNavigating || awaitingContent ? 'true' : undefined}
     >
       <div className="navigation-content-shell__page" data-page-transition>
         {visibleChildren}

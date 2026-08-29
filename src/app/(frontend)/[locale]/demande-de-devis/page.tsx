@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { QuotePage, generateQuoteMetadata } from '@/components/pages/quote-page'
+import { QuotePageSkeleton } from '@/components/layout/skeletons/quote-page-skeleton'
 import { requireLocale } from '@/lib/page-locale'
-import { withPageSuspense } from '@/lib/page-suspense'
-
+import { PageSuspense } from '@/lib/page-suspense'
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -11,4 +11,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generateQuoteMetadata(locale)
 }
 
-export default withPageSuspense(QuotePage)
+export default function Page(props: Props) {
+  return (
+    <PageSuspense fallback={<QuotePageSkeleton />}>
+      <QuotePage {...props} />
+    </PageSuspense>
+  )
+}

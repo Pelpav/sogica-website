@@ -1,6 +1,5 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import Image from 'next/image'
-import { Suspense } from 'react'
 import type { Locale } from '@/lib/i18n'
 import { localizedPath, resolveLocaleUrl, routePath } from '@/lib/i18n'
 import { SectionHeader } from '@/components/layout/SectionHeader'
@@ -561,6 +560,11 @@ export function BeforeAfterBlock({ block }: { block: PageBlock }) {
   )
 }
 
+function processStepLabel(locale: Locale, index: number): string {
+  const n = String(index + 1).padStart(2, '0')
+  return locale === 'fr' ? `Étape ${n}` : `Step ${n}`
+}
+
 export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
   const items = (block.items as { year?: string; title?: string; description?: string }[]) || []
   const variant = (block.variant as string) || 'process'
@@ -574,14 +578,17 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
             <h2 className="section-title mt-4">
               {txt(block.title) || (locale === 'fr' ? 'Notre méthode de travail' : 'How we work')}
             </h2>
-            {txt(block.description) ? (
-              <p className="lead-text lead-text--light mt-4">{txt(block.description)}</p>
+            {txt(block.description) ? <p className="lead-text mt-4">{txt(block.description)}</p> : null}
+            {block.media != null ? (
+              <div className="process-section__media mt-8">
+                <MediaRenderer media={block.media as MediaType} className="aspect-[4/3] w-full object-cover" />
+              </div>
             ) : null}
           </div>
           <ol className="process-steps">
             {items.map((item, i) => (
               <li key={i} className="process-steps__item">
-                <p className="process-steps__step">{txt(item.year)}</p>
+                <p className="process-steps__step">{processStepLabel(locale, i)}</p>
                 <h3 className="process-steps__title">{txt(item.title)}</h3>
                 {txt(item.description) ? (
                   <p className="process-steps__desc process-steps__desc--on-dark">{txt(item.description)}</p>
@@ -589,11 +596,6 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
               </li>
             ))}
           </ol>
-          {block.media != null ? (
-            <div className="process-section__media">
-              <MediaRenderer media={block.media as MediaType} className="aspect-[4/3] w-full object-cover" />
-            </div>
-          ) : null}
         </div>
       </SectionShell>
     )
@@ -711,11 +713,7 @@ export function FaqBlock({ block, locale }: { block: PageBlock; locale: Locale }
 }
 
 export function ContactSectionBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
-  return (
-    <Suspense fallback={null}>
-      <ContactSectionInner block={block} locale={locale} />
-    </Suspense>
-  )
+  return <ContactSectionInner block={block} locale={locale} />
 }
 
 async function ContactSectionInner({ block, locale }: { block: PageBlock; locale: Locale }) {

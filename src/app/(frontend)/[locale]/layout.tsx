@@ -10,8 +10,9 @@ import { SitePreloader } from '@/components/theme/SitePreloader'
 import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
 import { OrganizationJsonLd } from '@/components/seo/OrganizationJsonLd'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
+import { PageTransitionShell } from '@/components/theme/PageTransitionShell'
 import { getGlobal } from '@/lib/payload'
-import { localizedPath, isLocale, type Locale } from '@/lib/i18n'
+import { localizedPath, isLocale, locales, type Locale } from '@/lib/i18n'
 import { getMetadataBase, SITE_NAME } from '@/lib/seo'
 import { SITE_AUTHOR } from '@/lib/site-credits'
 import { Barlow_Condensed, Source_Sans_3 } from 'next/font/google'
@@ -32,6 +33,10 @@ const sourceSans = Source_Sans_3({
 })
 
 const fontClasses = `${barlow.variable} ${sourceSans.variable}`
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
 
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
@@ -107,7 +112,7 @@ async function LocaleLayoutContent({ children, params }: LayoutProps) {
           <SiteHeader locale={typedLocale} header={header} site={site} />
         </Suspense>
         <main id="main" className="site-main">
-          {children}
+          <PageTransitionShell>{children}</PageTransitionShell>
         </main>
         <SiteFooter locale={typedLocale} footer={footer} header={header} site={site} />
       </body>

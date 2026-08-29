@@ -192,6 +192,29 @@ function attachBlockIds(layout: unknown[], blockIds: string[]) {
   })
 }
 
+/** Conserve les IDs des entrées de tableaux (timeline, FAQ, etc.) pour ne pas écraser les locales FR. */
+function attachNestedItemIds(
+  frLayout: Array<Record<string, unknown>>,
+  targetLayout: Array<Record<string, unknown>>,
+) {
+  return targetLayout.map((targetBlock, index) => {
+    const frBlock = frLayout[index]
+    if (!frBlock || frBlock.blockType !== targetBlock.blockType) return targetBlock
+
+    const frItems = frBlock.items
+    const targetItems = targetBlock.items
+    if (!Array.isArray(frItems) || !Array.isArray(targetItems)) return targetBlock
+
+    return {
+      ...targetBlock,
+      items: targetItems.map((targetItem, itemIndex) => {
+        const frItem = frItems[itemIndex] as { id?: string } | undefined
+        return frItem?.id ? { ...(targetItem as Record<string, unknown>), id: frItem.id } : targetItem
+      }),
+    }
+  })
+}
+
 function extractBlockIds(layout: unknown): string[] {
   if (!Array.isArray(layout)) return []
   return layout
@@ -249,8 +272,10 @@ async function syncHome() {
 
   // Les blocs partagent une structure commune : FR d'abord, puis EN avec les mêmes IDs.
   const updatedFr = await syncHomeLocale(payload, homeId, 'fr', frLayout)
+  const frBlocksLayout = (updatedFr.layout ?? []) as Array<Record<string, unknown>>
   const blockIds = extractBlockIds(updatedFr.layout)
-  const updatedEn = await syncHomeLocale(payload, homeId, 'en', enLayout, blockIds)
+  const enLayoutWithItemIds = attachNestedItemIds(frBlocksLayout, enLayout as Array<Record<string, unknown>>)
+  const updatedEn = await syncHomeLocale(payload, homeId, 'en', enLayoutWithItemIds, blockIds)
 
   const frBlocks = Array.isArray(updatedFr.layout) ? updatedFr.layout.length : 0
   const enBlocks = Array.isArray(updatedEn.layout) ? updatedEn.layout.length : 0

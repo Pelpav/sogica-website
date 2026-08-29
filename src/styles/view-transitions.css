@@ -1,4 +1,4 @@
-/* View Transitions API — cross-fade on client-side navigation */
+/* View Transitions API — swipe horizontal selon le sens de navigation */
 
 @view-transition {
   navigation: none;
@@ -9,29 +9,35 @@
 }
 
 :root {
-  --vt-duration: 280ms;
-  --vt-exit: 180ms;
-  --vt-enter: 260ms;
+  --vt-duration: 320ms;
 }
 
 [data-page-transition] {
   view-transition-name: page-content;
 }
 
+::view-transition-group(page-content) {
+  overflow: hidden;
+  animation-duration: var(--vt-duration);
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 ::view-transition-old(page-content),
 ::view-transition-new(page-content) {
   animation-duration: var(--vt-duration);
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* Même page (ex. switch FR/EN) : fondu simple */
 ::view-transition-old(page-content) {
-  animation-name: vt-page-out;
+  animation-name: vt-page-fade-out;
 }
 
 ::view-transition-new(page-content) {
-  animation-name: vt-page-in;
+  animation-name: vt-page-fade-in;
 }
 
+/* Vers la droite dans le menu → swipe vers la gauche */
 html[data-nav-transition='nav-forward'] ::view-transition-old(page-content) {
   animation-name: vt-page-out-left;
 }
@@ -40,6 +46,7 @@ html[data-nav-transition='nav-forward'] ::view-transition-new(page-content) {
   animation-name: vt-page-in-right;
 }
 
+/* Vers la gauche dans le menu → swipe vers la droite */
 html[data-nav-transition='nav-back'] ::view-transition-old(page-content) {
   animation-name: vt-page-out-right;
 }
@@ -48,25 +55,21 @@ html[data-nav-transition='nav-back'] ::view-transition-new(page-content) {
   animation-name: vt-page-in-left;
 }
 
-@keyframes vt-page-out {
+@keyframes vt-page-fade-out {
   from {
     opacity: 1;
-    transform: translateY(0);
   }
   to {
     opacity: 0;
-    transform: translateY(-8px);
   }
 }
 
-@keyframes vt-page-in {
+@keyframes vt-page-fade-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -76,15 +79,15 @@ html[data-nav-transition='nav-back'] ::view-transition-new(page-content) {
     transform: translateX(0);
   }
   to {
-    opacity: 0;
-    transform: translateX(-24px);
+    opacity: 0.35;
+    transform: translateX(-100%);
   }
 }
 
 @keyframes vt-page-in-right {
   from {
-    opacity: 0;
-    transform: translateX(24px);
+    opacity: 0.35;
+    transform: translateX(100%);
   }
   to {
     opacity: 1;
@@ -98,15 +101,15 @@ html[data-nav-transition='nav-back'] ::view-transition-new(page-content) {
     transform: translateX(0);
   }
   to {
-    opacity: 0;
-    transform: translateX(24px);
+    opacity: 0.35;
+    transform: translateX(100%);
   }
 }
 
 @keyframes vt-page-in-left {
   from {
-    opacity: 0;
-    transform: translateX(-24px);
+    opacity: 0.35;
+    transform: translateX(-100%);
   }
   to {
     opacity: 1;

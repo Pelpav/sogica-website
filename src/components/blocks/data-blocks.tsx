@@ -15,11 +15,6 @@ import { ExpertiseShowcase } from '@/components/blocks/ExpertiseShowcase'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
 import { MapBlockClient } from '@/components/map/MapBlockClient'
-import { Suspense, type ReactNode } from 'react'
-
-function AsyncBlock({ children }: { children: ReactNode }) {
-  return <Suspense fallback={null}>{children}</Suspense>
-}
 
 function txt(value: unknown): string {
   return value == null ? '' : String(value)
@@ -27,11 +22,7 @@ function txt(value: unknown): string {
 
 export function ExpertiseGridBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
   const primaryOnly = block.showPrimaryOnly !== false
-  return (
-    <AsyncBlock>
-      <ExpertiseGridInner block={block} locale={locale} primaryOnly={primaryOnly} />
-    </AsyncBlock>
-  )
+  return <ExpertiseGridInner block={block} locale={locale} primaryOnly={primaryOnly} />
 }
 
 async function ExpertiseGridInner({
@@ -200,11 +191,7 @@ async function ExpertiseGridInner({
 }
 
 export function FeaturedProjectsBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
-  return (
-    <AsyncBlock>
-      <FeaturedProjectsInner block={block} locale={locale} />
-    </AsyncBlock>
-  )
+  return <FeaturedProjectsInner block={block} locale={locale} />
 }
 
 async function FeaturedProjectsInner({ block, locale }: { block: PageBlock; locale: Locale }) {
@@ -355,11 +342,7 @@ async function FeaturedProjectsInner({ block, locale }: { block: PageBlock; loca
 }
 
 export function ProjectGridBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
-  return (
-    <AsyncBlock>
-      <ProjectGridInner block={block} locale={locale} />
-    </AsyncBlock>
-  )
+  return <ProjectGridInner block={block} locale={locale} />
 }
 
 async function ProjectGridInner({ block, locale }: { block: PageBlock; locale: Locale }) {
@@ -405,11 +388,7 @@ async function ProjectGridInner({ block, locale }: { block: PageBlock; locale: L
 }
 
 export function ClientsBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
-  return (
-    <AsyncBlock>
-      <ClientsInner block={block} locale={locale} />
-    </AsyncBlock>
-  )
+  return <ClientsInner block={block} locale={locale} />
 }
 
 async function ClientsInner({ block, locale }: { block: PageBlock; locale: Locale }) {
@@ -455,11 +434,7 @@ async function ClientsInner({ block, locale }: { block: PageBlock; locale: Local
 }
 
 export function EquipmentBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
-  return (
-    <AsyncBlock>
-      <EquipmentInner block={block} locale={locale} />
-    </AsyncBlock>
-  )
+  return <EquipmentInner block={block} locale={locale} />
 }
 
 async function EquipmentInner({ block, locale }: { block: PageBlock; locale: Locale }) {
@@ -497,11 +472,7 @@ async function EquipmentInner({ block, locale }: { block: PageBlock; locale: Loc
 }
 
 export function MapBlock({ block, locale }: { block: PageBlock; locale: Locale }) {
-  return (
-    <AsyncBlock>
-      <MapInner block={block} locale={locale} />
-    </AsyncBlock>
-  )
+  return <MapInner block={block} locale={locale} />
 }
 
 async function MapInner({ block, locale }: { block: PageBlock; locale: Locale }) {

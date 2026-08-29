@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Locale } from '@/lib/i18n'
 
 export function ContactForm({
@@ -14,11 +14,7 @@ export function ContactForm({
 }) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
-  const [formStartedAt, setFormStartedAt] = useState('')
-
-  useEffect(() => {
-    setFormStartedAt(String(Date.now()))
-  }, [])
+  const [formStartedAt] = useState(() => String(Date.now()))
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()

@@ -208,7 +208,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_pages_v_blocks_quote_media_idx" ON "_pages_v_blocks_quote" USING btree ("media_id");`)
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({ db }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    ALTER TABLE "pages_blocks_faq_items" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "pages_blocks_faq_items_locales" DISABLE ROW LEVEL SECURITY;

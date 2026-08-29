@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { ClientsPage, generateClientsMetadata } from '@/components/pages/clients-page'
+import { ClientsPageSkeleton } from '@/components/layout/skeletons/clients-page-skeleton'
 import { requireLocale } from '@/lib/page-locale'
-import { withPageSuspense } from '@/lib/page-suspense'
-
+import { PageSuspense } from '@/lib/page-suspense'
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -11,4 +11,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generateClientsMetadata(locale)
 }
 
-export default withPageSuspense(ClientsPage)
+export default function Page(props: Props) {
+  return (
+    <PageSuspense fallback={<ClientsPageSkeleton />}>
+      <ClientsPage {...props} />
+    </PageSuspense>
+  )
+}
