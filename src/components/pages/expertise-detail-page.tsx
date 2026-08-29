@@ -1,3 +1,4 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
 import { SiteLink } from '@/components/ui/SiteLink'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -82,35 +83,33 @@ export async function ExpertiseDetailPage({ params }: Props) {
     <>
       <JsonLd data={breadcrumbJsonLd} />
       <article className="expertise-page expertise-page--detail">
-      <header className="legal-page__hero">
-        <div className="container-site expertise-page__detail-hero">
-          <div className="expertise-page__detail-hero-copy">
-            <p className="legal-page__eyebrow">{locale === 'fr' ? 'Expertise' : 'Expertise'}</p>
-            <div className="expertise-page__detail-title-row">
-              <span className="expertise-page__detail-icon" aria-hidden>
-                <IconBadge variant={iconVariant} />
-              </span>
-              <h1 className="legal-page__title expertise-page__hero-title">{expertise.name}</h1>
-            </div>
-            {expertise.shortDescription ? (
-              <p className="legal-page__intro">{expertise.shortDescription}</p>
-            ) : null}
+      <PageHeroReveal innerClassName="container-site expertise-page__detail-hero">
+        <div className="expertise-page__detail-hero-copy">
+          <p className="legal-page__eyebrow">{locale === 'fr' ? 'Expertise' : 'Expertise'}</p>
+          <div className="expertise-page__detail-title-row">
+            <span className="expertise-page__detail-icon" aria-hidden>
+              <IconBadge variant={iconVariant} />
+            </span>
+            <h1 className="legal-page__title expertise-page__hero-title">{expertise.name}</h1>
           </div>
-
-          {cover ? (
-            <div className="expertise-page__detail-cover">
-              <CmsImage
-                media={cover as MediaType}
-                alt={expertise.name || ''}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 42vw"
-                priority
-              />
-            </div>
+          {expertise.shortDescription ? (
+            <p className="legal-page__intro">{expertise.shortDescription}</p>
           ) : null}
         </div>
-      </header>
+
+        {cover ? (
+          <div className="expertise-page__detail-cover">
+            <CmsImage
+              media={cover as MediaType}
+              alt={expertise.name || ''}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 42vw"
+              priority
+            />
+          </div>
+        ) : null}
+      </PageHeroReveal>
 
       <section className="expertise-page__body">
         <div className="container-site expertise-page__detail-grid">

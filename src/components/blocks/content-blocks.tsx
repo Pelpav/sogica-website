@@ -7,6 +7,9 @@ import { SectionShell } from '@/components/layout/SectionShell'
 import { MediaRenderer } from '@/components/media/CmsMedia'
 import { getMediaAlt, getMediaUrl } from '@/lib/media-url'
 import { MarqueeStrip } from '@/components/blocks/MarqueeStrip'
+import { Reveal } from '@/components/motion/Reveal'
+import { RevealEach } from '@/components/motion/RevealEach'
+import { RevealStagger } from '@/components/motion/RevealStagger'
 import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import { ContactSectionContent } from '@/components/layout/ContactSection'
 import { getGlobal } from '@/lib/payload'
@@ -36,7 +39,7 @@ function resolveUrl(url: string | undefined, locale: Locale, fallback = '') {
 export function HeroBlock({
   block,
   locale,
-  priority,
+  priority = true,
 }: {
   block: PageBlock
   locale: Locale
@@ -62,7 +65,7 @@ export function HeroBlock({
     return (
       <section className="hero-construktion" data-hero-overlay>
         <div className="container-site hero-construktion__grid">
-          <div className="hero-construktion__copy">
+          <RevealStagger className="hero-construktion__copy" stagger={0.12}>
             {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
             <h1 className="display-title mt-4">{txt(block.title)}</h1>
             {txt(block.subtitle) ? <p className="lead-text mt-5 max-w-xl">{txt(block.subtitle)}</p> : null}
@@ -77,7 +80,7 @@ export function HeroBlock({
                 {secondaryCta?.label || (locale === 'fr' ? 'En savoir plus' : 'Learn more')}
               </SiteLink>
             </div>
-          </div>
+          </RevealStagger>
           <div className="hero-construktion__media card overflow-hidden">
             <Image
               src={imageSrc}
@@ -85,7 +88,7 @@ export function HeroBlock({
               width={1200}
               height={900}
               priority={priority}
-              loading={priority ? 'eager' : 'lazy'}
+              loading="eager"
               fetchPriority={priority ? 'high' : 'auto'}
               className="h-full w-full object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -103,11 +106,11 @@ export function HeroBlock({
     return (
       <section className="section-block" data-tone={sectionBg(block.backgroundVariant as string)}>
         <div className="container-site grid items-center gap-10 lg:grid-cols-2">
-          <div className="reveal">
+          <Reveal variant="up">
             {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
             <h1 className="display-title mt-4">{txt(block.title)}</h1>
             {txt(block.subtitle) ? <p className="lead-text mt-5">{txt(block.subtitle)}</p> : null}
-          </div>
+          </Reveal>
           {block.media != null ? (
             <div className="card overflow-hidden">
               <MediaRenderer media={block.media as MediaType} type={block.mediaType as 'image' | 'video'} priority={priority} />
@@ -127,7 +130,7 @@ export function HeroBlock({
             alt=""
             fill
             priority={priority}
-            loading={priority ? 'eager' : 'lazy'}
+            loading="eager"
             fetchPriority={priority ? 'high' : 'auto'}
             className="object-cover"
             sizes="100vw"
@@ -138,7 +141,7 @@ export function HeroBlock({
             alt={getMediaAlt(heroMedia as MediaType, '')}
             fill
             priority={priority}
-            loading={priority ? 'eager' : 'lazy'}
+            loading="eager"
             fetchPriority={priority ? 'high' : 'auto'}
             className="object-cover"
             sizes="100vw"
@@ -148,7 +151,7 @@ export function HeroBlock({
       <div className="hero-immersive__overlay" aria-hidden />
       <div className="hero-immersive__scrim" aria-hidden />
       <div className="hero-immersive__content container-site">
-        <div className="hero-immersive__copy max-w-3xl">
+        <RevealStagger className="hero-immersive__copy max-w-3xl" stagger={0.12}>
           {txt(block.eyebrow) ? <p className="eyebrow eyebrow--light">{txt(block.eyebrow)}</p> : null}
           <h1 className="display-title display-title--light mt-4">{txt(block.title)}</h1>
           {txt(block.subtitle) ? (
@@ -162,7 +165,7 @@ export function HeroBlock({
               </SiteLink>
             ) : null}
           </div>
-        </div>
+        </RevealStagger>
       </div>
     </section>
   )
@@ -178,7 +181,8 @@ export function IntroBlock({ block, locale }: { block: PageBlock; locale: Locale
 
     return (
       <SectionShell tone="light">
-        <div className="intro-composed__grid section-watermark" data-watermark={watermark}>
+        <div className="section-watermark" data-watermark={watermark}>
+          <RevealEach className="intro-composed__grid">
           <div className="intro-composed__stat">
             <div className="intro-composed__stat-card">
               <p className="intro-composed__stat-value">{txt(featuredStat?.value)}</p>
@@ -186,7 +190,7 @@ export function IntroBlock({ block, locale }: { block: PageBlock; locale: Locale
             </div>
           </div>
 
-          <div className="intro-composed__content">
+          <RevealStagger className="intro-composed__content" stagger={0.1}>
             {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
             <h2 className="section-title mt-4">{txt(block.title)}</h2>
             {txt(block.description) ? <p className="lead-text mt-5">{txt(block.description)}</p> : null}
@@ -194,13 +198,14 @@ export function IntroBlock({ block, locale }: { block: PageBlock; locale: Locale
               {locale === 'fr' ? 'En savoir plus' : 'Learn more'}
               <BtnArrowIcon />
             </SiteLink>
-          </div>
+          </RevealStagger>
 
           {block.media != null ? (
             <div className="intro-composed__media card overflow-hidden">
               <MediaRenderer media={block.media as MediaType} className="aspect-[4/5] w-full object-cover" />
             </div>
           ) : null}
+          </RevealEach>
         </div>
       </SectionShell>
     )
@@ -210,13 +215,13 @@ export function IntroBlock({ block, locale }: { block: PageBlock; locale: Locale
 
   return (
     <SectionShell tone="light">
-      <div className="intro-about__grid">
+      <RevealEach className="intro-about__grid">
         {block.media != null ? (
           <div className="intro-about__media card overflow-hidden">
             <MediaRenderer media={block.media as MediaType} className="aspect-[4/3] w-full object-cover" />
           </div>
         ) : null}
-        <div className={align === 'center' ? 'text-center' : ''}>
+        <RevealStagger className={align === 'center' ? 'text-center' : ''} stagger={0.1}>
           {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
           <h2 className="section-title mt-4">{txt(block.title)}</h2>
           {txt(block.description) ? <p className="lead-text mt-5">{txt(block.description)}</p> : null}
@@ -229,8 +234,8 @@ export function IntroBlock({ block, locale }: { block: PageBlock; locale: Locale
               {locale === 'fr' ? 'En savoir plus' : 'Learn more'}
             </SiteLink>
           </div>
-        </div>
-      </div>
+        </RevealStagger>
+      </RevealEach>
     </SectionShell>
   )
 }
@@ -253,18 +258,18 @@ export function TextMediaBlock({ block }: { block: PageBlock }) {
     <section className="section-block">
       <div className="container-site grid items-center gap-10 lg:grid-cols-2">
         {mediaLeft && block.media != null ? (
-          <div className="card overflow-hidden">
+          <Reveal variant="left" className="card overflow-hidden">
             <MediaRenderer media={block.media as MediaType} />
-          </div>
+          </Reveal>
         ) : null}
-        <div className="reveal">
+        <Reveal variant="up">
           {txt(block.title) ? <h2 className="section-title">{txt(block.title)}</h2> : null}
           {txt(block.body) ? <p className="lead-text mt-5 whitespace-pre-line">{txt(block.body)}</p> : null}
-        </div>
+        </Reveal>
         {!mediaLeft && block.media != null ? (
-          <div className="card overflow-hidden">
+          <Reveal variant="right" className="card overflow-hidden">
             <MediaRenderer media={block.media as MediaType} />
-          </div>
+          </Reveal>
         ) : null}
       </div>
     </section>
@@ -294,15 +299,19 @@ export function GalleryBlock({ block }: { block: PageBlock }) {
   return (
     <section className="section-block" data-tone="muted">
       <div className="container-site">
-        {txt(block.title) ? <h2 className="section-title mb-8">{txt(block.title)}</h2> : null}
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+        {txt(block.title) ? (
+          <Reveal variant="fade" className="mb-8 block">
+            <h2 className="section-title">{txt(block.title)}</h2>
+          </Reveal>
+        ) : null}
+        <RevealEach className="grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
           {items.map((item, i) => (
             <figure key={i} className="card overflow-hidden">
               <MediaRenderer media={item.media} />
               {item.caption ? <figcaption className="p-3 text-sm text-[var(--color-muted-foreground)]">{item.caption}</figcaption> : null}
             </figure>
           ))}
-        </div>
+        </RevealEach>
       </div>
     </section>
   )
@@ -317,7 +326,7 @@ export function MasonryBlock({ block }: { block: PageBlock }) {
       <div className="container-site mb-8">
         <SectionHeader title={txt(block.title) || 'Sur le terrain'} align="center" className="mx-auto" />
       </div>
-      <div className="container-site columns-2 gap-4 sm:columns-3">
+      <RevealEach className="container-site columns-2 gap-4 sm:columns-3">
         {items.map((item, i) => (
           <div key={i} className="mb-4 break-inside-avoid">
             <div className="card overflow-hidden">
@@ -325,7 +334,7 @@ export function MasonryBlock({ block }: { block: PageBlock }) {
             </div>
           </div>
         ))}
-      </div>
+      </RevealEach>
     </section>
   )
 }
@@ -340,14 +349,14 @@ export function StatsBlock({ block }: { block: PageBlock }) {
     return (
       <section className="sogica-section stats-featured stats-featured--flat">
         <div className="container-site">
-          <div className="stats-featured__grid">
+          <RevealEach className="stats-featured__grid">
             {items.map((item, i) => (
               <div key={i} className="stats-featured__item">
                 <p className="stats-featured__value">{item.value}</p>
                 <p className="stats-featured__label">{item.label}</p>
               </div>
             ))}
-          </div>
+          </RevealEach>
         </div>
       </section>
     )
@@ -357,14 +366,14 @@ export function StatsBlock({ block }: { block: PageBlock }) {
     return (
       <section className="stats-band">
         <div className="container-site">
-          <div className="stats-band__inner">
+          <RevealEach className="stats-band__inner">
             {items.map((item, i) => (
               <div key={i} className="stats-band__item">
                 <p className="stats-band__value">{item.value}</p>
                 <p className="stats-band__label">{item.label}</p>
               </div>
             ))}
-          </div>
+          </RevealEach>
         </div>
       </section>
     )
@@ -373,14 +382,14 @@ export function StatsBlock({ block }: { block: PageBlock }) {
   return (
     <section className="border-y border-[var(--color-border)] bg-white py-10">
       <div className="container-site">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <RevealEach className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item, i) => (
             <div key={i} className="stat-card">
               <p className="stat-value">{item.value}</p>
               <p className="stat-label">{item.label}</p>
             </div>
           ))}
-        </div>
+        </RevealEach>
       </div>
     </section>
   )
@@ -413,11 +422,13 @@ export function WhyChooseUsBlock({ block, locale }: { block: PageBlock; locale: 
             </div>
           ) : null}
           <div>
-            {txt(block.eyebrow) ? <p className="eyebrow eyebrow--light">{txt(block.eyebrow)}</p> : null}
-            <h2 className="section-title mt-4 text-white">{txt(block.title)}</h2>
-            {txt(block.description) ? <p className="lead-text lead-text--light mt-4">{txt(block.description)}</p> : null}
+            <RevealStagger stagger={0.1}>
+              {txt(block.eyebrow) ? <p className="eyebrow eyebrow--light">{txt(block.eyebrow)}</p> : null}
+              <h2 className="section-title mt-4 text-white">{txt(block.title)}</h2>
+              {txt(block.description) ? <p className="lead-text lead-text--light mt-4">{txt(block.description)}</p> : null}
+            </RevealStagger>
             {items.length ? (
-              <div className="why-choose__features">
+              <RevealEach className="why-choose__features">
                 {items.map((item, i) => (
                   <div key={i} className="why-choose__feature-card">
                     <span className="why-choose__feature-icon" aria-hidden>
@@ -426,7 +437,7 @@ export function WhyChooseUsBlock({ block, locale }: { block: PageBlock; locale: 
                     <p>{item.text}</p>
                   </div>
                 ))}
-              </div>
+              </RevealEach>
             ) : null}
             {txt(block.ctaLabel) && txt(block.ctaUrl) ? (
               <SiteLink href={resolveUrl(txt(block.ctaUrl), locale)} className="btn btn-primary mt-8">
@@ -444,11 +455,13 @@ export function WhyChooseUsBlock({ block, locale }: { block: PageBlock; locale: 
     <section className="section-block why-choose" data-tone="muted">
       <div className="container-site why-choose__grid">
         <div>
-          {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
-          <h2 className="section-title mt-4">{txt(block.title)}</h2>
-          {txt(block.description) ? <p className="lead-text mt-4">{txt(block.description)}</p> : null}
+          <RevealStagger stagger={0.1}>
+            {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
+            <h2 className="section-title mt-4">{txt(block.title)}</h2>
+            {txt(block.description) ? <p className="lead-text mt-4">{txt(block.description)}</p> : null}
+          </RevealStagger>
           {items.length ? (
-            <ul className="why-choose__list">
+            <RevealEach as="ul" className="why-choose__list">
               {items.map((item, i) => (
                 <li key={i} className="why-choose__item">
                   <span className="why-choose__check" aria-hidden>
@@ -457,7 +470,7 @@ export function WhyChooseUsBlock({ block, locale }: { block: PageBlock; locale: 
                   <span>{item.text}</span>
                 </li>
               ))}
-            </ul>
+            </RevealEach>
           ) : null}
           {txt(block.ctaLabel) && txt(block.ctaUrl) ? (
             <SiteLink href={resolveUrl(txt(block.ctaUrl), locale)} className="btn btn-primary mt-8">
@@ -488,11 +501,11 @@ export function CtaBlock({ block, locale }: { block: PageBlock; locale?: Locale 
     return (
       <section className={`sogica-section cta-banner cta-banner--flat ${toneClass}`}>
         <div className="container-site cta-banner__inner">
-          <div className="cta-banner__copy">
+          <RevealStagger className="cta-banner__copy" stagger={0.1}>
             <h2 className="cta-banner__title">{String(block.title)}</h2>
             {txt(block.description) ? <p className="cta-banner__lead">{txt(block.description)}</p> : null}
-          </div>
-          <div className="cta-banner__actions">
+          </RevealStagger>
+          <Reveal variant="up" className="cta-banner__actions">
             {txt(block.primaryLabel) && resolvedPrimary ? (
               <SiteLink href={resolvedPrimary} className="btn btn-primary">
                 {txt(block.primaryLabel)}
@@ -504,7 +517,7 @@ export function CtaBlock({ block, locale }: { block: PageBlock; locale?: Locale 
                 {txt(block.secondaryLabel)}
               </SiteLink>
             ) : null}
-          </div>
+          </Reveal>
         </div>
       </section>
     )
@@ -516,7 +529,7 @@ export function CtaBlock({ block, locale }: { block: PageBlock; locale?: Locale 
       data-tone={isDark ? 'dark' : block.backgroundVariant === 'accent' ? 'accent' : 'default'}
     >
       <div className="container-site text-center">
-        <div className="reveal mx-auto max-w-2xl">
+        <Reveal variant="fade" className="mx-auto max-w-2xl">
           <p className={`eyebrow justify-center ${isDark ? 'eyebrow--light' : ''}`}>
             {locale === 'en' ? 'Contact us' : 'Contactez-nous'}
           </p>
@@ -537,7 +550,7 @@ export function CtaBlock({ block, locale }: { block: PageBlock; locale?: Locale 
               </SiteLink>
             ) : null}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   )
@@ -573,7 +586,7 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
     return (
       <SectionShell tone="dark">
         <div className="process-section">
-          <div className="process-section__intro sogica-shell__header">
+          <RevealStagger className="process-section__intro sogica-shell__header" stagger={0.1}>
             {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
             <h2 className="section-title mt-4">
               {txt(block.title) || (locale === 'fr' ? 'Notre méthode de travail' : 'How we work')}
@@ -584,8 +597,8 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
                 <MediaRenderer media={block.media as MediaType} className="aspect-[4/3] w-full object-cover" />
               </div>
             ) : null}
-          </div>
-          <ol className="process-steps">
+          </RevealStagger>
+          <RevealEach as="ol" className="process-steps">
             {items.map((item, i) => (
               <li key={i} className="process-steps__item">
                 <p className="process-steps__step">{processStepLabel(locale, i)}</p>
@@ -595,7 +608,7 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
                 ) : null}
               </li>
             ))}
-          </ol>
+          </RevealEach>
         </div>
       </SectionShell>
     )
@@ -604,7 +617,7 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
   return (
     <section className="section-block" data-tone="muted">
       <div className="container-site max-w-2xl">
-        <ol className="space-y-6">
+        <RevealEach as="ol" className="space-y-6">
           {items.map((item, i) => (
             <li key={i} className="card-flat p-6">
               <p className="text-sm font-semibold text-[var(--color-primary)]">{item.year}</p>
@@ -612,7 +625,7 @@ export function TimelineBlock({ block, locale }: { block: PageBlock; locale: Loc
               {item.description ? <p className="lead-text mt-2">{item.description}</p> : null}
             </li>
           ))}
-        </ol>
+        </RevealEach>
       </div>
     </section>
   )
@@ -624,7 +637,7 @@ export function QuoteBlock({ block }: { block: PageBlock }) {
   if (variant === 'testimonial') {
     return (
       <section className="section-block testimonial-section section-watermark" data-tone="dark" data-watermark="SOGICA">
-        <div className="container-site testimonial-section__grid">
+        <RevealEach className="container-site testimonial-section__grid">
           <div className="testimonial-card">
             <p className="testimonial-card__quote">&ldquo;{String(block.quote)}&rdquo;</p>
             {txt(block.attribution) ? (
@@ -639,14 +652,14 @@ export function QuoteBlock({ block }: { block: PageBlock }) {
               <MediaRenderer media={block.media as MediaType} className="h-full w-full object-cover" />
             </div>
           ) : null}
-        </div>
+        </RevealEach>
       </section>
     )
   }
 
   return (
     <section className="section-block" data-tone="muted">
-      <blockquote className="container-site card-flat mx-auto max-w-3xl p-8 text-center">
+      <Reveal variant="fade" className="container-site card-flat mx-auto max-w-3xl p-8 text-center">
         <p className="text-xl leading-relaxed md:text-2xl">&ldquo;{String(block.quote)}&rdquo;</p>
         {txt(block.attribution) ? (
           <footer className="mt-4 text-sm text-[var(--color-muted-foreground)]">
@@ -654,7 +667,7 @@ export function QuoteBlock({ block }: { block: PageBlock }) {
             {txt(block.role) ? `, ${txt(block.role)}` : ''}
           </footer>
         ) : null}
-      </blockquote>
+      </Reveal>
     </section>
   )
 }
@@ -674,7 +687,7 @@ export function FaqBlock({ block, locale }: { block: PageBlock; locale: Locale }
 
   return (
     <section className="section-block faq-section">
-      <div className="container-site faq-section__grid">
+      <RevealEach className="container-site faq-section__grid">
         <div className="faq-section__support">
           {block.supportMedia != null ? (
             <div className="faq-section__support-media">
@@ -699,15 +712,15 @@ export function FaqBlock({ block, locale }: { block: PageBlock; locale: Locale }
             )}
           </div>
         </div>
-        <div>
+        <RevealStagger stagger={0.1}>
           {txt(block.eyebrow) ? <p className="eyebrow">{txt(block.eyebrow)}</p> : null}
           <h2 className="section-title mt-4">{txt(block.title)}</h2>
           {txt(block.description) ? <p className="lead-text mt-4">{txt(block.description)}</p> : null}
           <div className="mt-8">
             <FaqAccordion items={items} />
           </div>
-        </div>
-      </div>
+        </RevealStagger>
+      </RevealEach>
     </section>
   )
 }

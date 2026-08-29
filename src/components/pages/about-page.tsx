@@ -1,3 +1,5 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
+import { RevealEach } from '@/components/motion/RevealEach'
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
@@ -47,17 +49,15 @@ export async function AboutPage({ params }: Props) {
 
   return (
     <article className="about-page">
-      <header className="legal-page__hero">
-        <div className="container-site">
-          <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
-          <h1 className="legal-page__title">{site?.companyName || content.heroTitle}</h1>
-          <p className="legal-page__intro">{site?.tagline || content.heroLead}</p>
-        </div>
-      </header>
+      <PageHeroReveal>
+        <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
+        <h1 className="legal-page__title">{site?.companyName || content.heroTitle}</h1>
+        <p className="legal-page__intro">{site?.tagline || content.heroLead}</p>
+      </PageHeroReveal>
 
       <section className="about-page__intro">
         <div className="container-site about-page__intro-grid">
-          <div className="about-page__intro-copy">
+          <RevealEach className="about-page__intro-copy">
             <p className="about-page__eyebrow">{content.introEyebrow}</p>
             <h2 className="about-page__title">{content.introTitle}</h2>
             {content.introParagraphs.map((paragraph) => (
@@ -69,7 +69,7 @@ export async function AboutPage({ params }: Props) {
               {locale === 'fr' ? 'Fondée en' : 'Founded in'}{' '}
               <strong>{foundedYear}</strong>
             </p>
-          </div>
+          </RevealEach>
 
           <div className="about-page__intro-aside">
             {introMedia ? (
@@ -93,14 +93,14 @@ export async function AboutPage({ params }: Props) {
 
       <section className="sogica-section stats-featured stats-featured--flat" aria-label={content.stats[0].label}>
         <div className="container-site">
-          <div className="stats-featured__grid">
+          <RevealEach className="stats-featured__grid">
             {content.stats.map((stat) => (
               <div key={stat.label}>
                 <p className="stats-featured__value">{stat.value}</p>
                 <p className="stats-featured__label">{stat.label}</p>
               </div>
             ))}
-          </div>
+          </RevealEach>
         </div>
       </section>
 
@@ -112,7 +112,7 @@ export async function AboutPage({ params }: Props) {
             <p className="about-page__lead">{content.expertisesLead}</p>
           </div>
 
-          <div className="about-page__expertises">
+          <RevealEach className="about-page__expertises">
             {expertises.map((exp) => (
               <SiteLink
                 key={exp.id}
@@ -133,7 +133,7 @@ export async function AboutPage({ params }: Props) {
                 </span>
               </SiteLink>
             ))}
-          </div>
+          </RevealEach>
         </div>
       </section>
 

@@ -1,5 +1,6 @@
 'use client'
 
+import { MotionPage } from '@/components/motion/MotionPage'
 import { NavigationContentShell } from '@/components/theme/NavigationContentShell'
 import { Suspense, type ReactNode } from 'react'
 
@@ -17,7 +18,9 @@ export function PageTransitionShell({ children }: { children: ReactNode }) {
   return (
     <div className="page-transition-shell">
       <Suspense fallback={<PageTransitionFallback>{children}</PageTransitionFallback>}>
-        <NavigationContentShell>{children}</NavigationContentShell>
+        <NavigationContentShell>
+          <MotionPage>{children}</MotionPage>
+        </NavigationContentShell>
       </Suspense>
     </div>
   )

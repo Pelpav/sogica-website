@@ -1,3 +1,4 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
 import { ContactSectionContent } from '@/components/layout/ContactSection'
@@ -28,20 +29,18 @@ export async function ContactPage({ params }: Props) {
 
   return (
     <article className="contact-page">
-      <header className="legal-page__hero contact-page__hero">
-        <div className="container-site">
-          <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
-          <h1 className="legal-page__title contact-page__hero-title">{content.heroTitle}</h1>
-          <div className="contact-page__hero-copy">
-            <p className="legal-page__intro">{content.heroLead}</p>
-            {content.introParagraphs.map((paragraph) => (
-              <p key={paragraph} className="contact-page__text">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+      <PageHeroReveal className="legal-page__hero contact-page__hero">
+        <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
+        <h1 className="legal-page__title contact-page__hero-title">{content.heroTitle}</h1>
+        <div className="contact-page__hero-copy">
+          <p className="legal-page__intro">{content.heroLead}</p>
+          {content.introParagraphs.map((paragraph) => (
+            <p key={paragraph} className="contact-page__text">
+              {paragraph}
+            </p>
+          ))}
         </div>
-      </header>
+      </PageHeroReveal>
 
       <section className="contact-page__section contact-section">
         <div className="container-site">

@@ -1,3 +1,5 @@
+import { RevealEach } from '@/components/motion/RevealEach'
+import { RevealStagger } from '@/components/motion/RevealStagger'
 import { SiteLink } from '@/components/ui/SiteLink'
 import { ContactForm } from '@/components/forms/ContactForm'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
@@ -35,14 +37,16 @@ export function ContactSectionContent({
       : content.formTitle
 
   return (
-    <div className="contact-section__grid">
+    <RevealEach className="contact-section__grid">
       <aside className="contact-section__aside">
-        {showHeader && eyebrow ? <p className="contact-section__eyebrow">{eyebrow}</p> : null}
-        {showHeader && title ? <h2 className="contact-section__title">{title}</h2> : null}
-        {showHeader && description ? <p className="contact-section__lead">{description}</p> : null}
-        {!showHeader && showAsideTitle ? (
-          <h2 className="contact-section__aside-title">{content.asideTitle}</h2>
-        ) : null}
+        <RevealStagger stagger={0.08}>
+          {showHeader && eyebrow ? <p className="contact-section__eyebrow">{eyebrow}</p> : null}
+          {showHeader && title ? <h2 className="contact-section__title">{title}</h2> : null}
+          {showHeader && description ? <p className="contact-section__lead">{description}</p> : null}
+          {!showHeader && showAsideTitle ? (
+            <h2 className="contact-section__aside-title">{content.asideTitle}</h2>
+          ) : null}
+        </RevealStagger>
 
         <ul className="contact-section__details">
           {site?.address ? (
@@ -94,6 +98,6 @@ export function ContactSectionContent({
         <h3 className="contact-section__form-title">{formTitle}</h3>
         <ContactForm locale={locale} formType={formType} variant="home" />
       </div>
-    </div>
+    </RevealEach>
   )
 }

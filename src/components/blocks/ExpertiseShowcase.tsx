@@ -1,5 +1,7 @@
 'use client'
 
+import { Reveal } from '@/components/motion/Reveal'
+import { RevealEach } from '@/components/motion/RevealEach'
 import { SiteLink } from '@/components/ui/SiteLink'
 import { useState } from 'react'
 import { CmsImage } from '@/components/media/CmsMedia'
@@ -29,11 +31,7 @@ export function ExpertiseShowcase({
 
   return (
     <div className="expertise-showcase">
-      <div
-        className="expertise-showcase__list"
-        role="tablist"
-        aria-label={locale === 'fr' ? 'Expertises' : 'Expertise'}
-      >
+      <RevealEach className="expertise-showcase__list" role="tablist" aria-label={locale === 'fr' ? 'Expertises' : 'Expertise'}>
         {items.map((item) => {
           const isActive = item.id === active?.id
           return (
@@ -52,10 +50,11 @@ export function ExpertiseShowcase({
             </button>
           )
         })}
-      </div>
+      </RevealEach>
 
       {active ? (
-        <div className="expertise-showcase__panel" role="tabpanel">
+        <Reveal key={active.id} variant="right" className="block">
+          <div className="expertise-showcase__panel" role="tabpanel">
           <div className="expertise-showcase__media-wrap">
             <div className="expertise-showcase__media">
               {active.cover ? (
@@ -72,7 +71,7 @@ export function ExpertiseShowcase({
             </div>
             <div className="expertise-showcase__media-glow" aria-hidden />
           </div>
-          <div className="expertise-showcase__content">
+          <RevealEach className="expertise-showcase__content">
             <h3 className="expertise-showcase__title">{active.name}</h3>
             {active.shortDescription ? (
               <p className="expertise-showcase__desc">{active.shortDescription}</p>
@@ -81,8 +80,9 @@ export function ExpertiseShowcase({
               {locale === 'fr' ? 'En savoir plus' : 'Learn more'}
               <BtnArrowIcon />
             </SiteLink>
+          </RevealEach>
           </div>
-        </div>
+        </Reveal>
       ) : null}
     </div>
   )

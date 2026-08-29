@@ -1,3 +1,4 @@
+import { RevealStagger } from '@/components/motion/RevealStagger'
 import { SiteLink } from '@/components/ui/SiteLink'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -161,7 +162,7 @@ export async function ProjectDetailPage({ params }: Props) {
         <div className="hero-immersive__scrim" aria-hidden />
 
         <div className="hero-immersive__content">
-          <div className="container-site project-detail-page__hero-inner">
+          <RevealStagger className="container-site project-detail-page__hero-inner" stagger={0.1}>
             <SiteLink href={localizedPath(locale, listBase)} className="project-detail-page__back">
               <span className="project-detail-page__back-icon" aria-hidden>←</span>
               {labels.back}
@@ -187,7 +188,7 @@ export async function ProjectDetailPage({ params }: Props) {
                 ))}
               </dl>
             ) : null}
-          </div>
+          </RevealStagger>
         </div>
       </header>
 

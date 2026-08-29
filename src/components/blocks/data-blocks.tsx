@@ -1,3 +1,5 @@
+import { RevealEach } from '@/components/motion/RevealEach'
+import { Reveal } from '@/components/motion/Reveal'
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Locale } from '@/lib/i18n'
 import { localizedPath } from '@/lib/i18n'
@@ -62,10 +64,12 @@ async function ExpertiseGridInner({
         />
         <ExpertiseShowcase locale={locale} items={expertiseItems} />
         <SectionShellFooter>
-          <SiteLink href={localizedPath(locale, base)} className="btn btn-primary">
-            {locale === 'fr' ? 'Toutes les expertises' : 'All expertise'}
-            <BtnArrowIcon />
-          </SiteLink>
+          <Reveal variant="up">
+            <SiteLink href={localizedPath(locale, base)} className="btn btn-primary">
+              {locale === 'fr' ? 'Toutes les expertises' : 'All expertise'}
+              <BtnArrowIcon />
+            </SiteLink>
+          </Reveal>
         </SectionShellFooter>
       </SectionShell>
     )
@@ -91,7 +95,7 @@ async function ExpertiseGridInner({
         </div>
 
         {layout === 'services' ? (
-          <div className="services-list">
+          <RevealEach className="services-list">
             {docs.map((exp) => (
               <SiteLink
                 key={exp.id}
@@ -112,9 +116,9 @@ async function ExpertiseGridInner({
                 </span>
               </SiteLink>
             ))}
-          </div>
+          </RevealEach>
         ) : layout === 'grid' ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <RevealEach className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {docs.map((exp) => {
               const cover = exp.cover && typeof exp.cover === 'object' ? (exp.cover as MediaType) : null
               return (
@@ -147,9 +151,9 @@ async function ExpertiseGridInner({
                 </SiteLink>
               )
             })}
-          </div>
+          </RevealEach>
         ) : (
-          <div className="service-cards">
+          <RevealEach className="service-cards">
             {docs.map((exp) => {
               const cover = exp.cover && typeof exp.cover === 'object' ? (exp.cover as MediaType) : null
               return (
@@ -183,7 +187,7 @@ async function ExpertiseGridInner({
                 </SiteLink>
               )
             })}
-          </div>
+          </RevealEach>
         )}
       </div>
     </section>
@@ -300,42 +304,42 @@ async function FeaturedProjectsInner({ block, locale }: { block: PageBlock; loca
       />
 
       {layout === 'showcase' && spotlight?.coverImage ? (
-        <SiteLink
-          href={localizedPath(locale, `${base}/${spotlight.slug}`)}
-          className="project-spotlight group mb-8"
-        >
-          <div className="project-spotlight__media">
-            <CmsImage media={spotlight.coverImage} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="100vw" />
-            <div className="project-spotlight__shade" />
-            <div className="project-spotlight__body">
-              <p className="project-spotlight__meta">
-                {spotlightLocation || (locale === 'fr' ? 'Réalisation SOGICA' : 'SOGICA project')}
-              </p>
-              <h3 className="project-spotlight__title">{spotlight.title}</h3>
+        <Reveal variant="up" className="mb-8 block">
+          <SiteLink
+            href={localizedPath(locale, `${base}/${spotlight.slug}`)}
+            className="project-spotlight group"
+          >
+            <div className="project-spotlight__media">
+              <CmsImage media={spotlight.coverImage} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="100vw" />
+              <div className="project-spotlight__shade" />
+              <div className="project-spotlight__body">
+                <p className="project-spotlight__meta">
+                  {spotlightLocation || (locale === 'fr' ? 'Réalisation SOGICA' : 'SOGICA project')}
+                </p>
+                <h3 className="project-spotlight__title">{spotlight.title}</h3>
+              </div>
             </div>
-          </div>
-        </SiteLink>
+          </SiteLink>
+        </Reveal>
       ) : null}
 
-      <div
-        className={
-          layout === 'editorial'
-            ? 'projects-editorial'
-            : layout === 'showcase'
-              ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
-              : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
-        }
-      >
-        {(layout === 'showcase' ? rest : list).map((project) =>
-          renderProjectCard(project, layout === 'editorial'),
-        )}
-      </div>
+      {layout === 'editorial' ? (
+        <RevealEach className="projects-editorial">
+          {list.map((project) => renderProjectCard(project, true))}
+        </RevealEach>
+      ) : (
+        <RevealEach className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {(layout === 'showcase' ? rest : list).map((project) => renderProjectCard(project, false))}
+        </RevealEach>
+      )}
 
       <SectionShellFooter align="end">
-        <SiteLink href={localizedPath(locale, base)} className="btn btn-primary">
-          {locale === 'fr' ? 'Voir le portfolio' : 'Browse portfolio'}
-          <BtnArrowIcon />
-        </SiteLink>
+        <Reveal variant="up">
+          <SiteLink href={localizedPath(locale, base)} className="btn btn-primary">
+            {locale === 'fr' ? 'Voir le portfolio' : 'Browse portfolio'}
+            <BtnArrowIcon />
+          </SiteLink>
+        </Reveal>
       </SectionShellFooter>
     </SectionShell>
   )
@@ -363,7 +367,7 @@ async function ProjectGridInner({ block, locale }: { block: PageBlock; locale: L
     <section className="section-block">
       <div className="container-site">
         {txt(block.title) ? <h2 className="section-title mb-8">{txt(block.title)}</h2> : null}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealEach className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {docs.map((p) => (
             <SiteLink key={p.id} href={localizedPath(locale, `${base}/${p.slug}`)} className="project-card-overlay group">
               {p.coverImage && typeof p.coverImage === 'object' ? (
@@ -381,7 +385,7 @@ async function ProjectGridInner({ block, locale }: { block: PageBlock; locale: L
               )}
             </SiteLink>
           ))}
-        </div>
+        </RevealEach>
       </div>
     </section>
   )
@@ -414,19 +418,23 @@ async function ClientsInner({ block, locale }: { block: PageBlock; locale: Local
   return (
     <section className="sogica-section sogica-section--tight-top trusted-by-section" id="trusted">
       <div className="container-site">
-        <p className="trusted-by__label">
-          {txt(block.title) || (locale === 'fr' ? 'Ils nous font confiance' : 'Trusted by')}
-        </p>
+        <Reveal variant="fade">
+          <p className="trusted-by__label">
+            {txt(block.title) || (locale === 'fr' ? 'Ils nous font confiance' : 'Trusted by')}
+          </p>
+        </Reveal>
         {items.length ? (
-          <LogoCarousel items={items} />
+          <Reveal variant="up" className="mt-6 block">
+            <LogoCarousel items={items} />
+          </Reveal>
         ) : (
-          <div className="logo-wall-light trusted-by__logos">
+          <RevealEach className="logo-wall-light trusted-by__logos">
             {docs.map((client) => (
               <div key={client.id}>
                 <span className="text-sm font-semibold text-[var(--color-muted-foreground)]">{client.name}</span>
               </div>
             ))}
-          </div>
+          </RevealEach>
         )}
       </div>
     </section>
@@ -450,7 +458,7 @@ async function EquipmentInner({ block, locale }: { block: PageBlock; locale: Loc
           description={locale === 'fr' ? 'Un parc adapté aux chantiers d\'envergure.' : 'Equipment suited to large-scale projects.'}
           className="mb-8"
         />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <RevealEach className="grid gap-4 sm:grid-cols-2">
           {docs.map((item) => (
             <div key={item.id} className="card-flat flex items-start gap-4 p-5">
               <IconBadge variant="equipment" />
@@ -465,7 +473,7 @@ async function EquipmentInner({ block, locale }: { block: PageBlock; locale: Loc
               ) : null}
             </div>
           ))}
-        </div>
+        </RevealEach>
       </div>
     </section>
   )
@@ -492,9 +500,9 @@ async function MapInner({ block, locale }: { block: PageBlock; locale: Locale })
         }
         className="sogica-shell__header mb-8"
       />
-      <div className="projects-map-block">
+      <Reveal variant="up" className="projects-map-block">
         <MapBlockClient locale={locale} points={points} height={Number(block.height || 520)} />
-      </div>
+      </Reveal>
     </SectionShell>
   )
 }

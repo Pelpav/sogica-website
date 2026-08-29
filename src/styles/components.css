@@ -1747,19 +1747,6 @@
     background: var(--color-primary);
   }
 
-  .reveal {
-    opacity: calc(0.5 + 0.5 * var(--motion-intensity));
-    transform: translateY(calc(12px * var(--motion-intensity)));
-    animation: reveal-in 0.6s ease forwards;
-  }
-
-  @keyframes reveal-in {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .btn-sm {
     min-height: 2.5rem;
     padding: 0.5rem 1.125rem;

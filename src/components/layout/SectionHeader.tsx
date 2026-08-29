@@ -1,3 +1,5 @@
+import { RevealStagger } from '@/components/motion/RevealStagger'
+
 export function SectionHeader({
   eyebrow,
   title,
@@ -18,7 +20,7 @@ export function SectionHeader({
   const alignClass = align === 'center' ? 'text-center mx-auto' : ''
 
   return (
-    <div className={`max-w-2xl ${alignClass} ${className}`}>
+    <RevealStagger className={`max-w-2xl ${alignClass} ${className}`} stagger={0.1}>
       {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
       {title ? <h2 className={`section-title ${eyebrow ? 'mt-4' : ''}`}>{title}</h2> : null}
       {description ? (
@@ -26,6 +28,6 @@ export function SectionHeader({
           {description}
         </p>
       ) : null}
-    </div>
+    </RevealStagger>
   )
 }

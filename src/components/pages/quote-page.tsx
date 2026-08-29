@@ -1,3 +1,5 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
+import { RevealEach } from '@/components/motion/RevealEach'
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
@@ -27,23 +29,21 @@ export async function QuotePage({ params }: Props) {
 
   return (
     <article className="quote-page">
-      <header className="legal-page__hero quote-page__hero">
-        <div className="container-site">
-          <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
-          <h1 className="legal-page__title quote-page__hero-title">{content.heroTitle}</h1>
-          <div className="quote-page__hero-copy">
-            <p className="legal-page__intro">{content.heroLead}</p>
-            {content.introParagraphs.map((paragraph) => (
-              <p key={paragraph} className="quote-page__text">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+      <PageHeroReveal className="legal-page__hero quote-page__hero">
+        <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
+        <h1 className="legal-page__title quote-page__hero-title">{content.heroTitle}</h1>
+        <div className="quote-page__hero-copy">
+          <p className="legal-page__intro">{content.heroLead}</p>
+          {content.introParagraphs.map((paragraph) => (
+            <p key={paragraph} className="quote-page__text">
+              {paragraph}
+            </p>
+          ))}
         </div>
-      </header>
+      </PageHeroReveal>
 
       <section className="quote-page__section">
-        <div className="container-site quote-page__grid">
+        <RevealEach className="container-site quote-page__grid">
           <aside className="quote-page__aside">
             <h2 className="quote-page__aside-title">{content.asideTitle}</h2>
             <p className="quote-page__aside-lead">{content.tipsTitle}</p>
@@ -67,7 +67,7 @@ export async function QuotePage({ params }: Props) {
             <h2 className="quote-page__form-title">{content.formTitle}</h2>
             <ContactForm locale={locale} formType="quote" variant="home" />
           </div>
-        </div>
+        </RevealEach>
       </section>
     </article>
   )

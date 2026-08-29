@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
-import { SiteHeaderView } from '@/components/layout/SiteHeader'
 import { InstantNavigation } from '@/components/theme/InstantNavigation'
 import { RouteProgressBar } from '@/components/theme/RouteProgressBar'
 import { SitePreloader } from '@/components/theme/SitePreloader'
 import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
 import { PageTransitionShell } from '@/components/theme/PageTransitionShell'
+import { MotionProvider } from '@/components/motion/MotionProvider'
+import { MotionScrollEnhancer } from '@/components/motion/MotionScrollEnhancer'
 import {
   LocaleFooterSlot,
   LocaleHeaderFallback,
@@ -15,7 +16,7 @@ import {
   LocaleThemeSlot,
   resolveLayoutLocale,
 } from '@/components/layout/locale-layout-slots'
-import { localizedPath, locales } from '@/lib/i18n'
+import { locales } from '@/lib/i18n'
 import { getMetadataBase, SITE_NAME } from '@/lib/seo'
 import { SITE_AUTHOR } from '@/lib/site-credits'
 import { Barlow_Condensed, Source_Sans_3 } from 'next/font/google'
@@ -86,6 +87,8 @@ async function LocaleLayoutShell({ children, params }: LayoutProps) {
           <RouteProgressBar />
         </Suspense>
         <SitePreloader />
+        <MotionProvider>
+          <MotionScrollEnhancer />
         <RefreshRouteOnSave />
         <Suspense fallback={null}>
           <LocaleJsonLdSlot params={params} />
@@ -105,6 +108,7 @@ async function LocaleLayoutShell({ children, params }: LayoutProps) {
         <Suspense fallback={null}>
           <LocaleFooterSlot params={params} />
         </Suspense>
+        </MotionProvider>
       </body>
     </html>
   )

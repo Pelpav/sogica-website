@@ -1,0 +1,15 @@
+/* Motion system — Framer Motion handles reveals; keep reduced-motion + CMS overrides */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+[data-motion='none'] [data-motion-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}

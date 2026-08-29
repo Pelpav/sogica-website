@@ -1,6 +1,6 @@
 # SOGICA SA — Site officiel
 
-Site corporate production-ready pour **SOGICA SA** : Next.js 15 App Router, Payload CMS 3, Neon PostgreSQL, Cloudflare R2.
+Site corporate production-ready pour **SOGICA SA** : Next.js 16 App Router, Payload CMS 3, Neon PostgreSQL, Cloudflare R2, Framer Motion.
 
 ## Prérequis
 
@@ -94,9 +94,11 @@ Voir `docs/deployment.md`.
 
 ## Documentation
 
+- `docs/site-overview.md` — présentation technique & commerciale
 - `docs/architecture.md`
 - `docs/cms-guide.md`
 - `docs/content-model.md`
 - `docs/media-pipeline.md`
 - `docs/media-inventory.md`
+- `docs/motion.md` — système d'animation scroll
 - `docs/deployment.md`

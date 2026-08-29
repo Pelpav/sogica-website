@@ -1,12 +1,13 @@
-# Architecture SOGICA — Phase 0
+# Architecture SOGICA
 
 ## Vue d'ensemble
 
-Application monolithique **Next.js 15 App Router + Payload CMS 3** avec :
+Application monolithique **Next.js 16 App Router + Payload CMS 3** avec :
 
 - **Neon PostgreSQL** — métadonnées, contenu, formulaires (jamais de binaires)
 - **Cloudflare R2** — médias publics + pièces jointes privées (adapter S3)
 - **Vercel** — déploiement frontend + API Payload
+- **Framer Motion** — reveals au scroll, transitions de page
 - **pnpm** — gestionnaire de paquets
 
 ## Structure
@@ -20,13 +21,36 @@ src/
 ├── blocks/                  # Page builder + blocs narratifs projets
 ├── collections/             # Users, Pages, Expertises, Projects, etc.
 ├── globals/                 # Site, Theme, Header, Footer, Legal
-├── components/              # UI publique
-├── lib/                     # Payload client, i18n, env, media
-├── hooks/                   # Hooks Payload
+├── components/
+│   ├── motion/              # Reveal, RevealEach, MotionProvider…
+│   ├── blocks/              # BlockRenderer + blocs CMS
+│   ├── pages/               # Pages typées (about, contact, etc.)
+│   └── theme/               # Navigation, preloader, transitions
+├── lib/                     # Payload client, i18n, env, media, motion-config
+├── hooks/                   # Hooks Payload + revalidateTag
 ├── migrations/              # Migrations Postgres production
-├── scripts/                 # Seed, import médias
-└── styles/                  # Tokens CSS + Tailwind
+├── scripts/                 # Seed, import médias, sync homepage
+└── styles/                  # Tokens CSS + motion.css + Tailwind
 ```
+
+## Rendu & performance
+
+| Mécanisme | Usage |
+|-----------|-------|
+| Partial Prerendering | Shell layout statique, contenu CMS streamé |
+| `use cache` + `cacheTag` | Globals, médias, requêtes CMS |
+| Suspense par bloc | Homepage : skeleton → bloc par bloc |
+| `revalidateTag` | Invalidation cache à la publication Payload |
+| Hero `priority` | Image LCP hors Reveal, `loading="eager"` |
+
+## Animations
+
+Système Framer Motion documenté dans `docs/motion.md` :
+
+- `MotionProvider` — layout locale, exclut pages légales
+- `Reveal` / `RevealEach` / `RevealStagger` — scroll reveals
+- `useMotionActive()` — pas d'animation avant hydratation
+- `motion.css` — overrides reduced-motion et `data-motion=none`
 
 ## Rôles CMS
 
@@ -47,11 +71,12 @@ src/
 
 | Sujet | Décision |
 |-------|----------|
-| Next.js version | 15.2.4 (compatible Payload 3.88) |
+| Next.js version | 16.3.x (PPR + cache composants) |
 | Dev sans R2 | `USE_LOCAL_MEDIA=true` — stockage local |
 | Map tiles dev | MapLibre demo tiles (configurable prod) |
-| Fonts | Barlow Condensed + Source Sans 3 (self-hosted via next/font) |
+| Fonts | Barlow Condensed + Source Sans 3 (next/font) |
 | Email | Nodemailer SMTP configurable |
+| Animations | Framer Motion 13, pas de GSAP pour reveals simples |
 
 ## Manques credentials
 

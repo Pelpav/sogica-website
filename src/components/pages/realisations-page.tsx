@@ -1,3 +1,5 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
+import { RevealEach } from '@/components/motion/RevealEach'
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
@@ -68,20 +70,18 @@ export async function RealisationsPage({ params, searchParams }: Props) {
 
   return (
     <article className="realisations-page">
-      <header className="legal-page__hero realisations-page__hero">
-        <div className="container-site">
-          <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
-          <h1 className="legal-page__title realisations-page__hero-title">{content.heroTitle}</h1>
-          <div className="realisations-page__hero-copy">
-            <p className="legal-page__intro">{content.heroLead}</p>
-            {content.introParagraphs.map((paragraph) => (
-              <p key={paragraph} className="realisations-page__text">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+      <PageHeroReveal className="legal-page__hero realisations-page__hero">
+        <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
+        <h1 className="legal-page__title realisations-page__hero-title">{content.heroTitle}</h1>
+        <div className="realisations-page__hero-copy">
+          <p className="legal-page__intro">{content.heroLead}</p>
+          {content.introParagraphs.map((paragraph) => (
+            <p key={paragraph} className="realisations-page__text">
+              {paragraph}
+            </p>
+          ))}
         </div>
-      </header>
+      </PageHeroReveal>
 
       <section className="realisations-page__section">
         <div className="container-site">
@@ -114,7 +114,7 @@ export async function RealisationsPage({ params, searchParams }: Props) {
               </p>
 
               {filtered.length ? (
-                <div className="realisations-page__grid">
+                <RevealEach className="realisations-page__grid">
                   {filtered.map((project) => {
                     const href = localizedPath(locale, `${listBase}/${project.slug}`)
                     const location = projectLocation(project)
@@ -159,7 +159,7 @@ export async function RealisationsPage({ params, searchParams }: Props) {
                       </SiteLink>
                     )
                   })}
-                </div>
+                </RevealEach>
               ) : (
                 <div className="realisations-page__no-results">
                   <h2 className="realisations-page__no-results-title">{content.noResultsTitle}</h2>

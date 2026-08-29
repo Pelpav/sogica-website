@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { MotionSection } from '@/components/motion/MotionSection'
 
 export type ShellTone = 'dark' | 'light' | 'brand' | 'muted'
 
@@ -20,7 +21,7 @@ export function SectionShell({
   tightTop?: boolean
 }) {
   return (
-    <section
+    <MotionSection
       id={id}
       className={[
         'sogica-section',
@@ -35,7 +36,7 @@ export function SectionShell({
         .join(' ')}
     >
       <div className="container-site">{children}</div>
-    </section>
+    </MotionSection>
   )
 }
 

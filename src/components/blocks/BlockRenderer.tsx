@@ -68,7 +68,7 @@ export async function BlockRenderer({ blocks, locale }: { blocks: PageBlock[] | 
 
         switch (block.blockType) {
           case 'hero':
-            return <HeroBlock key={key} block={block} locale={locale} priority={index === 0} />
+            return <HeroBlock key={key} block={block} locale={locale} priority />
           case 'intro':
             return <IntroBlock key={key} block={block} locale={locale} />
           case 'richText':

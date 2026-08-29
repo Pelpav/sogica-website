@@ -1,3 +1,5 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
+import { RevealEach } from '@/components/motion/RevealEach'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
@@ -75,20 +77,18 @@ export async function ClientsPage({ params }: Props) {
 
   return (
     <article className="clients-page">
-      <header className="legal-page__hero clients-page__hero">
-        <div className="container-site">
-          <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
-          <h1 className="legal-page__title clients-page__hero-title">{content.heroTitle}</h1>
-          <div className="clients-page__hero-copy">
-            <p className="legal-page__intro">{content.heroLead}</p>
-            {content.introParagraphs.map((paragraph) => (
-              <p key={paragraph} className="clients-page__text">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+      <PageHeroReveal className="legal-page__hero clients-page__hero">
+        <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
+        <h1 className="legal-page__title clients-page__hero-title">{content.heroTitle}</h1>
+        <div className="clients-page__hero-copy">
+          <p className="legal-page__intro">{content.heroLead}</p>
+          {content.introParagraphs.map((paragraph) => (
+            <p key={paragraph} className="clients-page__text">
+              {paragraph}
+            </p>
+          ))}
         </div>
-      </header>
+      </PageHeroReveal>
 
       {carouselItems.length ? (
         <section className="clients-page__logos" aria-label={content.logosEyebrow}>
@@ -118,7 +118,7 @@ export async function ClientsPage({ params }: Props) {
                 return (
                   <section key={type} className="clients-page__group">
                     <h2 className="clients-page__group-title">{content.groupLabels[type]}</h2>
-                    <ul className="clients-page__grid">
+                    <RevealEach as="ul" className="clients-page__grid">
                       {items.map((client) => {
                         const logoSrc = resolveLogoSrc(client)
 
@@ -161,7 +161,7 @@ export async function ClientsPage({ params }: Props) {
                           </li>
                         )
                       })}
-                    </ul>
+                    </RevealEach>
                   </section>
                 )
               })}

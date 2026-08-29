@@ -1,3 +1,5 @@
+import { PageHeroReveal } from '@/components/motion/PageHeroReveal'
+import { RevealEach } from '@/components/motion/RevealEach'
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
 import { buildPageMetadata } from '@/lib/seo'
@@ -35,24 +37,22 @@ export async function ExpertisesPage({ params }: Props) {
 
   return (
     <article className="expertise-page">
-      <header className="legal-page__hero expertise-page__hero">
-        <div className="container-site">
-          <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
-          <h1 className="legal-page__title expertise-page__hero-title">{content.heroTitle}</h1>
-          <div className="expertise-page__hero-copy">
-            <p className="legal-page__intro">{content.heroLead}</p>
-            {content.introParagraphs.map((paragraph) => (
-              <p key={paragraph} className="expertise-page__text">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+      <PageHeroReveal className="legal-page__hero expertise-page__hero">
+        <p className="legal-page__eyebrow">{content.heroEyebrow}</p>
+        <h1 className="legal-page__title expertise-page__hero-title">{content.heroTitle}</h1>
+        <div className="expertise-page__hero-copy">
+          <p className="legal-page__intro">{content.heroLead}</p>
+          {content.introParagraphs.map((paragraph) => (
+            <p key={paragraph} className="expertise-page__text">
+              {paragraph}
+            </p>
+          ))}
         </div>
-      </header>
+      </PageHeroReveal>
 
       <section className="expertise-page__section expertise-page__poles">
         <div className="container-site">
-          <div className="expertise-page__pole-list">
+          <RevealEach className="expertise-page__pole-list">
             {docs.map((exp, index) => {
               const cover = resolveExpertiseCover(exp)
               const fallback = exp.slug ? getExpertiseDetailFallback(locale, exp.slug) : null
@@ -109,7 +109,7 @@ export async function ExpertisesPage({ params }: Props) {
                 </article>
               )
             })}
-          </div>
+          </RevealEach>
         </div>
       </section>
 
