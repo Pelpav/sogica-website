@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { routeLabels, type Locale } from '@/lib/i18n'
+import { buildPageMetadata } from '@/lib/seo'
+import { localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import {
   getLegalNoticeSections,
   getPrivacySections,
@@ -15,7 +16,14 @@ type Props = { params: Promise<{ locale: string }> }
 
 export async function generateLegalMetadata(locale: Locale, variant: LegalVariant): Promise<Metadata> {
   const title = variant === 'legal' ? routeLabels[locale].legal : routeLabels[locale].privacy
-  return { title }
+  const path = variant === 'legal' ? slugRoutes.legal[locale] : slugRoutes.privacy[locale]
+
+  return buildPageMetadata({
+    locale,
+    title,
+    pathname: localizedPath(locale, path),
+    ogImageKey: variant,
+  })
 }
 
 function LegalSections({ sections }: { sections: ReturnType<typeof getLegalNoticeSections> }) {

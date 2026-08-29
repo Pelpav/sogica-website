@@ -1,4 +1,1 @@
-import ExpertiseDetailPage from '../../expertises/[slug]/page'
-
-
-export default ExpertiseDetailPage
+export { generateMetadata, default } from '../../expertises/[slug]/page'

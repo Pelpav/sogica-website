@@ -1,6 +1,8 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildBreadcrumbJsonLd, buildPageMetadata } from '@/lib/seo'
 import { CmsImage } from '@/components/media/CmsMedia'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
@@ -10,7 +12,7 @@ import {
   getExpertiseDetailFallback,
   getExpertiseDetailLabels,
 } from '@/lib/expertise-content'
-import { isLocale, localizedPath, slugRoutes, type Locale } from '@/lib/i18n'
+import { isLocale, localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import { getPayloadClient } from '@/lib/payload'
 import { hasLexicalContent } from '@/lib/legal-content'
 import { serializeLexical } from '@/lib/serialize-lexical'
@@ -28,15 +30,28 @@ export async function generateExpertiseDetailMetadata(
     locale,
     where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
     limit: 1,
-    depth: 0,
+    depth: 1,
   })
   const expertise = result.docs[0]
-  if (!expertise) return { title: locale === 'fr' ? 'Expertise' : 'Expertise' }
-
-  return {
-    title: expertise.name || undefined,
-    description: expertise.shortDescription || undefined,
+  if (!expertise) {
+    return buildPageMetadata({
+      locale,
+      title: locale === 'fr' ? 'Expertise' : 'Expertise',
+      pathname: localizedPath(locale, `${slugRoutes.expertises[locale]}/${slug}`),
+      noindex: true,
+    })
   }
+
+  const cover = resolveExpertiseCover(expertise)
+
+  return buildPageMetadata({
+    locale,
+    pathname: localizedPath(locale, `${slugRoutes.expertises[locale]}/${slug}`),
+    title: expertise.name,
+    description: expertise.shortDescription,
+    ogImage: expertise.seo?.ogImage ?? cover,
+    seo: expertise.seo,
+  })
 }
 
 export async function ExpertiseDetailPage({ params }: Props) {
@@ -72,8 +87,19 @@ export async function ExpertiseDetailPage({ params }: Props) {
 
   const projectsBase = slugRoutes.realisations[locale]
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: routeLabels[locale].home, path: localizedPath(locale) },
+    { name: routeLabels[locale].expertises, path: localizedPath(locale, expertiseBase) },
+    {
+      name: expertise.name || '',
+      path: localizedPath(locale, `${expertiseBase}/${expertise.slug}`),
+    },
+  ])
+
   return (
-    <article className="expertise-page expertise-page--detail">
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <article className="expertise-page expertise-page--detail">
       <header className="legal-page__hero">
         <div className="container-site expertise-page__detail-hero">
           <div className="expertise-page__detail-hero-copy">
@@ -211,5 +237,6 @@ export async function ExpertiseDetailPage({ params }: Props) {
         </section>
       ) : null}
     </article>
+    </>
   )
 }

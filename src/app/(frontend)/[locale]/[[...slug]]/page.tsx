@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { CmsCustomPage } from '@/components/pages/cms-custom-page'
 import { findPageBySlug, findPageBySlugLive, getGlobal } from '@/lib/payload'
-import { isLocale, switchLocalePath, type Locale } from '@/lib/i18n'
+import { buildPageMetadata } from '@/lib/seo'
+import { isLocale, type Locale } from '@/lib/i18n'
 import { withPageSuspense } from '@/lib/page-suspense'
 
 type Props = {
@@ -16,23 +17,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pageSlug = slug?.join('/') || 'home'
   const page = await findPageBySlug(pageSlug === '' ? 'home' : pageSlug, locale)
   const site = await getGlobal('site-settings', locale)
-  const title = page?.seo?.title || page?.title || site?.defaultSeo?.title || site?.companyName
-  const description = page?.seo?.description || site?.defaultSeo?.description || site?.tagline
-
   const canonicalPath = `/${locale}/${pageSlug === 'home' ? '' : pageSlug}`.replace(/\/$/, '') || `/${locale}`
 
-  return {
-    title,
-    description: description || undefined,
-    alternates: {
-      canonical: canonicalPath,
-      languages: {
-        fr: switchLocalePath(canonicalPath, 'fr'),
-        en: switchLocalePath(canonicalPath, 'en'),
-      },
-    },
-    robots: page?.seo?.noindex ? { index: false } : undefined,
-  }
+  return buildPageMetadata({
+    locale,
+    pathname: canonicalPath,
+    title: page?.title || site?.defaultSeo?.title || site?.companyName,
+    description: site?.defaultSeo?.description || site?.tagline,
+    ogImage: site?.defaultSeo?.ogImage,
+    ogImageKey: pageSlug === 'home' ? 'default' : undefined,
+    seo: page?.seo,
+  })
 }
 
 async function CmsPageContent({ params, searchParams }: Props) {

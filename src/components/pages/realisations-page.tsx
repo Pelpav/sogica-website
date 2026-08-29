@@ -1,5 +1,6 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { CmsImage } from '@/components/media/CmsMedia'
 import { ProjectFilters } from '@/components/portfolio/ProjectFilters'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
@@ -46,10 +47,13 @@ function matchesFilters(project: Project, filters: Record<string, string | undef
 
 export async function generateRealisationsMetadata(locale: Locale): Promise<Metadata> {
   const content = getRealisationsIndexContent(locale)
-  return {
+  return buildPageMetadata({
+    locale,
     title: routeLabels[locale].realisations,
     description: content.heroLead,
-  }
+    pathname: localizedPath(locale, slugRoutes.realisations[locale]),
+    ogImageKey: 'realisations',
+  })
 }
 
 export async function RealisationsPage({ params, searchParams }: Props) {

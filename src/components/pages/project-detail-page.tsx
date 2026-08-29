@@ -1,12 +1,14 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildBreadcrumbJsonLd, buildPageMetadata } from '@/lib/seo'
 import { CmsImage, CmsVideo } from '@/components/media/CmsMedia'
 import { ProjectMap } from '@/components/map/ProjectMap'
 import { NarrativeRenderer } from '@/components/portfolio/NarrativeRenderer'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
-import { isLocale, localizedPath, slugRoutes, type Locale } from '@/lib/i18n'
+import { isLocale, localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import { hasLexicalContent } from '@/lib/legal-content'
 import { getPayloadClient } from '@/lib/payload'
 import {
@@ -35,15 +37,26 @@ export async function generateProjectDetailMetadata(
     locale,
     where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
     limit: 1,
-    depth: 0,
+    depth: 1,
   })
   const project = result.docs[0]
-  if (!project) return { title: locale === 'fr' ? 'Réalisation' : 'Project' }
-
-  return {
-    title: project.title || undefined,
-    description: project.shortDescription || undefined,
+  if (!project) {
+    return buildPageMetadata({
+      locale,
+      title: locale === 'fr' ? 'Réalisation' : 'Project',
+      pathname: localizedPath(locale, `${slugRoutes.realisations[locale]}/${slug}`),
+      noindex: true,
+    })
   }
+
+  return buildPageMetadata({
+    locale,
+    pathname: localizedPath(locale, `${slugRoutes.realisations[locale]}/${slug}`),
+    title: project.title,
+    description: project.shortDescription,
+    ogImage: project.coverImage,
+    seo: project.seo,
+  })
 }
 
 function isExpertise(value: unknown): value is Expertise {
@@ -158,8 +171,19 @@ export async function ProjectDetailPage({ params }: Props) {
     status ? { label: labels.status, value: status } : null,
   ].filter((item): item is { label: string; value: string } => Boolean(item))
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: routeLabels[locale].home, path: localizedPath(locale) },
+    { name: routeLabels[locale].realisations, path: localizedPath(locale, listBase) },
+    {
+      name: project.title || '',
+      path: localizedPath(locale, `${listBase}/${project.slug}`),
+    },
+  ])
+
   return (
-    <article className="project-detail-page">
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <article className="project-detail-page">
       <header className="hero-immersive project-detail-page__hero">
         {cover ? (
           <div className="hero-immersive__media" aria-hidden>
@@ -523,5 +547,6 @@ export async function ProjectDetailPage({ params }: Props) {
         </div>
       </section>
     </article>
+    </>
   )
 }

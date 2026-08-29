@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { ContactSectionContent } from '@/components/layout/ContactSection'
 import { getContactPageContent } from '@/lib/contact-content'
-import { routeLabels, type Locale } from '@/lib/i18n'
+import { localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import { getGlobal } from '@/lib/payload'
 import { requireLocale } from '@/lib/page-locale'
 
@@ -9,10 +10,13 @@ type Props = { params: Promise<{ locale: string }> }
 
 export async function generateContactMetadata(locale: Locale): Promise<Metadata> {
   const content = getContactPageContent(locale)
-  return {
+  return buildPageMetadata({
+    locale,
     title: routeLabels[locale].contact,
     description: content.heroLead,
-  }
+    pathname: localizedPath(locale, slugRoutes.contact[locale]),
+    ogImageKey: 'contact',
+  })
 }
 
 export async function ContactPage({ params }: Props) {

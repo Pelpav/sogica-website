@@ -2343,6 +2343,16 @@
     color: white;
   }
 
+  .site-footer__credit-link {
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .site-footer__credit-link:hover {
+    color: white;
+  }
+
   .media-frame {
     position: relative;
     overflow: hidden;

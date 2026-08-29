@@ -20,6 +20,7 @@
     "rename:media": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/rename-media-files.ts",
     "sync:home": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/sync-home-layout.ts",
     "import:media": "cross-env USE_LOCAL_MEDIA=false NODE_OPTIONS=--no-deprecation tsx src/scripts/import-local-media.ts",
+    "generate:og": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/generate-og-images.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "quality-gate": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",

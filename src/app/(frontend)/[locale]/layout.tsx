@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { SiteHeader, SiteHeaderView } from '@/components/layout/SiteHeader'
@@ -7,9 +8,12 @@ import { InstantNavigation } from '@/components/theme/InstantNavigation'
 import { RouteProgressBar } from '@/components/theme/RouteProgressBar'
 import { SitePreloader } from '@/components/theme/SitePreloader'
 import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
+import { OrganizationJsonLd } from '@/components/seo/OrganizationJsonLd'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { getGlobal } from '@/lib/payload'
 import { localizedPath, isLocale, type Locale } from '@/lib/i18n'
+import { getMetadataBase, SITE_NAME } from '@/lib/seo'
+import { SITE_AUTHOR } from '@/lib/site-credits'
 import { Barlow_Condensed, Source_Sans_3 } from 'next/font/google'
 import '@/app/globals.css'
 
@@ -28,6 +32,21 @@ const sourceSans = Source_Sans_3({
 })
 
 const fontClasses = `${barlow.variable} ${sourceSans.variable}`
+
+export const metadata: Metadata = {
+  metadataBase: getMetadataBase(),
+  title: {
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
+  },
+  authors: [{ name: SITE_AUTHOR.name, url: SITE_AUTHOR.url }],
+  creator: SITE_AUTHOR.name,
+  publisher: SITE_NAME,
+  icons: {
+    icon: '/brand/sogica-logo.png',
+    apple: '/brand/sogica-logo.png',
+  },
+}
 
 type LayoutProps = {
   children: ReactNode
@@ -70,6 +89,7 @@ async function LocaleLayoutContent({ children, params }: LayoutProps) {
         </Suspense>
         <SitePreloader />
         <RefreshRouteOnSave />
+        <OrganizationJsonLd locale={typedLocale} />
         <ThemeProvider theme={theme} />
         <a href="#main" className="skip-link">
           {locale === 'fr' ? 'Aller au contenu' : 'Skip to content'}

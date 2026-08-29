@@ -1,12 +1,13 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { CmsImage } from '@/components/media/CmsMedia'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
 import { fetchExpertises } from '@/lib/cms-queries'
 import { getCachedGalleryMediaIds, getCachedMediaById } from '@/lib/cms-media'
 import { getAboutContent } from '@/lib/about-content'
-import { localizedPath, slugRoutes, type Locale } from '@/lib/i18n'
+import { localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import { getGlobal } from '@/lib/payload'
 import { requireLocale } from '@/lib/page-locale'
 import type { Media as MediaType } from '@/payload-types'
@@ -16,10 +17,13 @@ type Props = { params: Promise<{ locale: string }> }
 export async function generateAboutMetadata(locale: Locale): Promise<Metadata> {
   const site = await getGlobal('site-settings', locale)
   const content = getAboutContent(locale)
-  return {
-    title: locale === 'fr' ? 'À propos' : 'About',
+  return buildPageMetadata({
+    locale,
+    title: routeLabels[locale].about,
     description: site?.tagline || content.heroLead,
-  }
+    pathname: localizedPath(locale, slugRoutes.about[locale]),
+    ogImageKey: 'about',
+  })
 }
 
 export async function AboutPage({ params }: Props) {

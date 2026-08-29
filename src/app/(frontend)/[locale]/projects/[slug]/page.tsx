@@ -1,4 +1,1 @@
-import ProjectDetailPage from '../../realisations/[slug]/page'
-
-
-export default ProjectDetailPage
+export { generateMetadata, default } from '../../realisations/[slug]/page'

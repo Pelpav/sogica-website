@@ -1,5 +1,6 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { ContactForm } from '@/components/forms/ContactForm'
 import { getQuotePageContent } from '@/lib/quote-content'
@@ -10,10 +11,13 @@ type Props = { params: Promise<{ locale: string }> }
 
 export async function generateQuoteMetadata(locale: Locale): Promise<Metadata> {
   const content = getQuotePageContent(locale)
-  return {
+  return buildPageMetadata({
+    locale,
     title: routeLabels[locale].quote,
     description: content.heroLead,
-  }
+    pathname: localizedPath(locale, slugRoutes.quote[locale]),
+    ogImageKey: 'quote',
+  })
 }
 
 export async function QuotePage({ params }: Props) {

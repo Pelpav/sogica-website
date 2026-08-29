@@ -1,4 +1,1 @@
-import ExpertisesIndexPage from '../expertises/page'
-
-
-export default ExpertisesIndexPage
+export { generateMetadata, default } from '../expertises/page'

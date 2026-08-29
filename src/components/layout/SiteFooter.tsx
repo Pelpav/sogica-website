@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Suspense } from 'react'
 import { SiteLink } from '@/components/ui/SiteLink'
+import { SiteCredit } from '@/components/layout/SiteCredit'
 import { CurrentYear } from '@/components/ui/CurrentYear'
 import type { Footer as FooterType, Header as HeaderType, SiteSetting } from '@/payload-types'
 import type { Locale } from '@/lib/i18n'
@@ -147,7 +148,7 @@ export function SiteFooter({
               ))}
             </div>
           </div>
-          <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:justify-between">
+          <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
             <p>
               {footer?.copyright ? (
                 footer.copyright
@@ -157,6 +158,7 @@ export function SiteFooter({
                 </>
               )}
             </p>
+            <SiteCredit locale={locale} />
             <p>Bamako, Mali</p>
           </div>
         </div>

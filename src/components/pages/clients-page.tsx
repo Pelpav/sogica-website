@@ -1,12 +1,13 @@
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { LogoCarousel } from '@/components/blocks/LogoCarousel'
 import {
   clientTypeOrder,
   getClientsIndexContent,
   type ClientPartnerType,
 } from '@/lib/clients-content'
-import { routeLabels, type Locale } from '@/lib/i18n'
+import { localizedPath, routeLabels, slugRoutes, type Locale } from '@/lib/i18n'
 import { getPartnerLogoPath } from '@/lib/partner-logos'
 import { getMediaUrl } from '@/lib/media-url'
 import { getPayloadClient } from '@/lib/payload'
@@ -42,10 +43,13 @@ function groupClients(docs: ClientsPartner[]) {
 
 export async function generateClientsMetadata(locale: Locale): Promise<Metadata> {
   const content = getClientsIndexContent(locale)
-  return {
+  return buildPageMetadata({
+    locale,
     title: routeLabels[locale].clients,
     description: content.heroLead,
-  }
+    pathname: localizedPath(locale, slugRoutes.clients[locale]),
+    ogImageKey: 'clients',
+  })
 }
 
 export async function ClientsPage({ params }: Props) {

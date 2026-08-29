@@ -1,5 +1,6 @@
 import { SiteLink } from '@/components/ui/SiteLink'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { CmsImage } from '@/components/media/CmsMedia'
 import { BtnArrowIcon } from '@/components/ui/BtnArrow'
 import { IconBadge, expertiseIconVariantFromSlug } from '@/components/ui/IconBadge'
@@ -14,10 +15,13 @@ type Props = { params: Promise<{ locale: string }> }
 
 export async function generateExpertisesMetadata(locale: Locale): Promise<Metadata> {
   const content = getExpertiseIndexContent(locale)
-  return {
+  return buildPageMetadata({
+    locale,
     title: routeLabels[locale].expertises,
     description: content.heroLead,
-  }
+    pathname: localizedPath(locale, slugRoutes.expertises[locale]),
+    ogImageKey: 'expertises',
+  })
 }
 
 export async function ExpertisesPage({ params }: Props) {
