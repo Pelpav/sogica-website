@@ -2,8 +2,6 @@ import { ImageResponse } from 'next/og'
 import type { NextRequest } from 'next/server'
 import { SITE_NAME } from '@/lib/seo'
 
-export const runtime = 'edge'
-
 const WIDTH = 1200
 const HEIGHT = 630
 
