@@ -4,7 +4,7 @@ Site corporate production-ready pour **SOGICA SA** : Next.js 15 App Router, Payl
 
 ## Prérequis
 
-- Node.js ≥ 20.9
+- Node.js 25.x (25.8.1 recommandé — voir `.nvmrc`)
 - pnpm ≥ 9
 - PostgreSQL (Neon en production)
 - Cloudflare R2 (production media)
