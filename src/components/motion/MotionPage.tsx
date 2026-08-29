@@ -3,7 +3,7 @@
 import { getMotionIntensity, MOTION_EASE } from '@/lib/motion-config'
 import { motion, useReducedMotion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { useMotionActive } from './MotionProvider'
 
 export function MotionPage({ children }: { children: ReactNode }) {
@@ -11,8 +11,15 @@ export function MotionPage({ children }: { children: ReactNode }) {
   const active = useMotionActive()
   const reduced = useReducedMotion()
   const intensity = getMotionIntensity()
+  const committedPath = useRef(pathname)
 
-  if (!active || reduced || intensity === 0) {
+  const isRouteChange = committedPath.current !== pathname
+
+  useEffect(() => {
+    committedPath.current = pathname
+  }, [pathname])
+
+  if (!active || reduced || intensity === 0 || !isRouteChange) {
     return <>{children}</>
   }
 
@@ -20,7 +27,7 @@ export function MotionPage({ children }: { children: ReactNode }) {
     <motion.div
       suppressHydrationWarning
       key={pathname}
-      initial={{ opacity: 0, y: 14 * intensity }}
+      initial={{ opacity: 1, y: 14 * intensity }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: MOTION_EASE }}
     >
