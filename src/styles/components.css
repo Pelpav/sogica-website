@@ -3227,6 +3227,17 @@
     filter: contrast(1.08) saturate(1.12) brightness(1.03);
   }
 
+  .site-preloader__video--loading {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-preloader__video--playing {
+    position: relative;
+    opacity: 1;
+  }
+
   .site-preloader__fallback {
     object-fit: contain;
     padding: 2rem;

@@ -1,10 +1,7 @@
-import { fetchExpertises } from '@/lib/cms-queries'
+import { generateExpertiseSlugStaticParams } from '@/lib/page-static-params'
 
 export async function generateStaticParams() {
-  const { docs } = await fetchExpertises('en')
-  return docs
-    .filter((doc) => doc.slug)
-    .map((doc) => ({ locale: 'en', slug: doc.slug! }))
+  return generateExpertiseSlugStaticParams('en')
 }
 
 export { generateMetadata, default } from '../../expertises/[slug]/page'

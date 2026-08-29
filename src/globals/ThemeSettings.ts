@@ -1,5 +1,10 @@
 import type { GlobalConfig } from 'payload'
 import { isAdmin, canManageThemeCSS, publicRead } from '../access/roles'
+import { revalidateCmsGlobalAfterChange } from '../hooks/revalidate-cms'
+
+const cmsGlobalHooks = {
+  afterChange: [revalidateCmsGlobalAfterChange],
+}
 
 export const ThemeSettings: GlobalConfig = {
   slug: 'theme-settings',
@@ -9,6 +14,7 @@ export const ThemeSettings: GlobalConfig = {
     description: 'Couleurs, polices et style visuel du site public.',
   },
   access: { read: publicRead, update: isAdmin },
+  hooks: cmsGlobalHooks,
   fields: [
     {
       type: 'row',
@@ -81,6 +87,7 @@ export const Header: GlobalConfig = {
     description: 'Logo et liens de navigation en haut de page.',
   },
   access: { read: publicRead, update: isAdmin },
+  hooks: cmsGlobalHooks,
   fields: [
     { name: 'logo', type: 'upload', relationTo: 'media', label: 'Logo' },
     { name: 'logoAlt', type: 'upload', relationTo: 'media', label: 'Logo alternatif' },
@@ -124,6 +131,7 @@ export const Footer: GlobalConfig = {
     description: 'Liens et textes affichés en bas de chaque page.',
   },
   access: { read: publicRead, update: isAdmin },
+  hooks: cmsGlobalHooks,
   fields: [
     {
       name: 'columns',

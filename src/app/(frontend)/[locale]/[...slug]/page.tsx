@@ -7,6 +7,10 @@ import {
 } from '@/lib/cms-page-route'
 import { PageSuspense } from '@/lib/page-suspense'
 
+// Pas de generateStaticParams ici tant qu'il n'existe pas de page CMS « custom »
+// hors routes dédiées (about, contact, etc.). Utiliser generateCmsSlugStaticParams()
+// dès qu'une telle page est ajoutée dans Payload.
+
 export async function generateMetadata({ params }: CmsSlugRouteProps): Promise<Metadata> {
   return generateCmsRouteMetadata(params)
 }

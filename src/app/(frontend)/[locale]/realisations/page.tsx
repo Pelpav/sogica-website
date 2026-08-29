@@ -6,10 +6,15 @@ import {
 import { RealisationsPageSkeleton } from '@/components/layout/skeletons/realisations-page-skeleton'
 import { requireLocale } from '@/lib/page-locale'
 import { PageSuspense } from '@/lib/page-suspense'
+import { generateStaticParamsForLocale } from '@/lib/page-static-params'
 
 type Props = {
   params: Promise<{ locale: string }>
   searchParams: Promise<Record<string, string | undefined>>
+}
+
+export function generateStaticParams() {
+  return generateStaticParamsForLocale('fr')
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

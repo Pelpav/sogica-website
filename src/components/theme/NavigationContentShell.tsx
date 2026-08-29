@@ -57,6 +57,8 @@ function setNavTransitionDirection(fromPath: string, toPath: string) {
   delete root.dataset.navTransition
 }
 
+const NAVIGATION_HOLD_TIMEOUT_MS = 400
+
 function commitWithTransition(callback: () => void) {
   const root = document.documentElement
 
@@ -78,6 +80,7 @@ function commitWithTransition(callback: () => void) {
 export function NavigationContentShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const [isNavigating, setIsNavigating] = useState(false)
+  const [holdTimedOut, setHoldTimedOut] = useState(false)
   const committedPath = useRef(pathname)
   const frozenChildren = useRef<ReactNode>(children)
   const navigationTarget = useRef<string | null>(null)
@@ -156,10 +159,22 @@ export function NavigationContentShell({ children }: { children: ReactNode }) {
   const awaitingContent =
     pathname !== committedPath.current || !hasRenderableContent(children)
 
-  const canHoldPreviousPage =
+  const wantsHoldPreviousPage =
     hasRealContent.current &&
     hasRenderableContent(frozenChildren.current) &&
     (isNavigating || awaitingContent)
+
+  useEffect(() => {
+    if (!wantsHoldPreviousPage) {
+      setHoldTimedOut(false)
+      return
+    }
+
+    const timer = window.setTimeout(() => setHoldTimedOut(true), NAVIGATION_HOLD_TIMEOUT_MS)
+    return () => window.clearTimeout(timer)
+  }, [wantsHoldPreviousPage])
+
+  const canHoldPreviousPage = wantsHoldPreviousPage && !holdTimedOut
 
   const visibleChildren = canHoldPreviousPage ? frozenChildren.current : children
 

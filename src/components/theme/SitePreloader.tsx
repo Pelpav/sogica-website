@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BRAND_LOGO_PATH, SITE_PRELOADER_PATH } from '@/lib/media-filenames'
 
-const STORAGE_KEY = 'sogica-preloader-v2'
+const STORAGE_KEY = 'sogica-preloader-v3'
 const MIN_MS = 1800
 const MAX_MS = 9000
 
@@ -14,6 +14,7 @@ export function SitePreloader() {
   const [entered, setEntered] = useState(false)
   const [progress, setProgress] = useState(6)
   const [videoFailed, setVideoFailed] = useState(false)
+  const [videoPlaying, setVideoPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const startedAt = useRef(0)
   const finished = useRef(false)
@@ -79,8 +80,13 @@ export function SitePreloader() {
       setProgress((value) => Math.max(value, 18 + ratio * 72))
     }
 
+    const onPlaying = () => {
+      setVideoPlaying(true)
+    }
+
     const tryPlay = () => {
       if (!video) return
+      video.muted = true
       void video.play().catch(() => {
         setVideoFailed(true)
         window.setTimeout(finish, MIN_MS)
@@ -93,13 +99,20 @@ export function SitePreloader() {
     }
 
     if (video.readyState >= 2) tryPlay()
-    else video.addEventListener('loadeddata', tryPlay, { once: true })
+    else {
+      video.addEventListener('loadeddata', tryPlay, { once: true })
+      video.addEventListener('canplay', tryPlay, { once: true })
+    }
+
     video.addEventListener('timeupdate', onVideoProgress)
+    video.addEventListener('playing', onPlaying)
 
     return () => {
       window.clearTimeout(maxTimer)
       video.removeEventListener('loadeddata', tryPlay)
+      video.removeEventListener('canplay', tryPlay)
       video.removeEventListener('timeupdate', onVideoProgress)
+      video.removeEventListener('playing', onPlaying)
     }
   }, [visible, finish, videoFailed])
 
@@ -128,21 +141,31 @@ export function SitePreloader() {
             alt="SOGICA"
           />
         ) : (
-          <video
-            ref={videoRef}
-            className="site-preloader__video"
-            src={SITE_PRELOADER_PATH}
-            poster={BRAND_LOGO_PATH}
-            muted
-            autoPlay
-            playsInline
-            preload="auto"
-            onEnded={finish}
-            onError={() => {
-              setVideoFailed(true)
-              window.setTimeout(finish, MIN_MS)
-            }}
-          />
+          <>
+            {!videoPlaying ? (
+              <img
+                className="site-preloader__video site-preloader__fallback"
+                src={BRAND_LOGO_PATH}
+                alt=""
+                aria-hidden
+              />
+            ) : null}
+            <video
+              ref={videoRef}
+              className={`site-preloader__video ${videoPlaying ? 'site-preloader__video--playing' : 'site-preloader__video--loading'}`}
+              src={SITE_PRELOADER_PATH}
+              muted
+              autoPlay
+              playsInline
+              preload="auto"
+              disablePictureInPicture
+              onEnded={finish}
+              onError={() => {
+                setVideoFailed(true)
+                window.setTimeout(finish, MIN_MS)
+              }}
+            />
+          </>
         )}
         <div className="site-preloader__vignette" aria-hidden />
         <div className="site-preloader__scanline" aria-hidden />

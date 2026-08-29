@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isContentEditor, publishedOnly } from '../access/roles'
 import { publicationFields, sourceNoteField } from '../fields/common'
+import { revalidateCmsAfterChange, revalidateCmsAfterDelete } from '../hooks/revalidate-cms'
 
 export const ClientsPartners: CollectionConfig = {
   slug: 'clients-partners',
@@ -12,6 +13,10 @@ export const ClientsPartners: CollectionConfig = {
     defaultColumns: ['name', 'type', 'featured', '_status'],
   },
   versions: { drafts: true },
+  hooks: {
+    afterChange: [revalidateCmsAfterChange],
+    afterDelete: [revalidateCmsAfterDelete],
+  },
   access: {
     read: publishedOnly,
     create: isContentEditor,

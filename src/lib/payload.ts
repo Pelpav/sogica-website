@@ -16,7 +16,7 @@ function tagCms(scope: string, locale: Locale, key?: string) {
 export async function findPublishedPages(locale: Locale) {
   'use cache'
   tagCms('pages', locale)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   return payload.find({
@@ -46,7 +46,7 @@ async function withDepthFallback<T>(load: (depth: number) => Promise<T>, depths 
 export async function findPageBySlug(slug: string, locale: Locale) {
   'use cache'
   tagCms('page', locale, slug)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
 
@@ -91,7 +91,7 @@ export async function getGlobal<T extends keyof import('../payload-types').Confi
 ) {
   'use cache'
   tagCms('global', locale, String(slug))
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
 

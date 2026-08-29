@@ -3,8 +3,13 @@ import { LegalPage, generateLegalMetadata } from '@/components/pages/legal-page'
 import { LegalPageSkeleton } from '@/components/layout/skeletons/legal-page-skeleton'
 import { requireLocale } from '@/lib/page-locale'
 import { PageSuspense } from '@/lib/page-suspense'
+import { generateStaticParamsForLocale } from '@/lib/page-static-params'
 
 type Props = { params: Promise<{ locale: string }> }
+
+export function generateStaticParams() {
+  return generateStaticParamsForLocale('en')
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = await requireLocale(params)

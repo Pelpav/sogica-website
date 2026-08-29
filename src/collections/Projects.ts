@@ -3,6 +3,7 @@ import { isAdmin, isContentEditor, publishedOnly } from '../access/roles'
 import { publicationFields, seoFields, slugField } from '../fields/common'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { narrativeBlocks } from '../blocks/narrative'
+import { revalidateCmsAfterChange, revalidateCmsAfterDelete } from '../hooks/revalidate-cms'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -15,6 +16,10 @@ export const Projects: CollectionConfig = {
     defaultColumns: ['title', 'year', 'country', '_status', 'featured'],
   },
   versions: { drafts: { autosave: { interval: 300 } } },
+  hooks: {
+    afterChange: [revalidateCmsAfterChange],
+    afterDelete: [revalidateCmsAfterDelete],
+  },
   access: {
     read: publishedOnly,
     create: isContentEditor,

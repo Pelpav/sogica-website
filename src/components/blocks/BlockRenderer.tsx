@@ -1,4 +1,5 @@
 import type { Locale } from '@/lib/i18n'
+import { Suspense, type ReactNode } from 'react'
 import {
   HeroBlock,
   IntroBlock,
@@ -29,6 +30,18 @@ export type PageBlock = {
   hidden?: boolean | null
   id?: string | null
   [key: string]: unknown
+}
+
+function BlockDataFallback() {
+  return <div className="block-skeleton page-skeleton__block" data-page-skeleton aria-hidden />
+}
+
+function withDataSuspense(node: ReactNode, key: string) {
+  return (
+    <Suspense key={key} fallback={<BlockDataFallback />}>
+      {node}
+    </Suspense>
+  )
 }
 
 /** Évite CTA + contact + footer CTA en triple avant le pied de page. */
@@ -77,17 +90,17 @@ export async function BlockRenderer({ blocks, locale }: { blocks: PageBlock[] | 
           case 'whyChooseUs':
             return <WhyChooseUsBlock key={key} block={block} locale={locale} />
           case 'expertiseGrid':
-            return <ExpertiseGridBlock key={key} block={block} locale={locale} />
+            return withDataSuspense(<ExpertiseGridBlock block={block} locale={locale} />, key)
           case 'featuredProjects':
-            return <FeaturedProjectsBlock key={key} block={block} locale={locale} />
+            return withDataSuspense(<FeaturedProjectsBlock block={block} locale={locale} />, key)
           case 'projectGrid':
-            return <ProjectGridBlock key={key} block={block} locale={locale} />
+            return withDataSuspense(<ProjectGridBlock block={block} locale={locale} />, key)
           case 'clients':
-            return <ClientsBlock key={key} block={block} locale={locale} />
+            return withDataSuspense(<ClientsBlock block={block} locale={locale} />, key)
           case 'equipment':
             return null
           case 'map':
-            return <MapBlock key={key} block={block} locale={locale} />
+            return withDataSuspense(<MapBlock block={block} locale={locale} />, key)
           case 'cta':
             return <CtaBlock key={key} block={block} locale={locale} />
           case 'beforeAfter':

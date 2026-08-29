@@ -3,6 +3,7 @@ import { isAdmin, isContentEditor, publishedOnly } from '../access/roles'
 import { publicationFields, seoFields, slugField, sourceNoteField } from '../fields/common'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { pageBuilderBlocks } from '../blocks/pageBuilder'
+import { revalidateCmsAfterChange, revalidateCmsAfterDelete } from '../hooks/revalidate-cms'
 
 export const Expertises: CollectionConfig = {
   slug: 'expertises',
@@ -14,6 +15,10 @@ export const Expertises: CollectionConfig = {
     defaultColumns: ['name', 'featured', 'sortOrder', '_status'],
   },
   versions: { drafts: { autosave: { interval: 300 } } },
+  hooks: {
+    afterChange: [revalidateCmsAfterChange],
+    afterDelete: [revalidateCmsAfterDelete],
+  },
   access: {
     read: publishedOnly,
     create: isContentEditor,
@@ -98,6 +103,10 @@ export const Pages: CollectionConfig = {
     },
   },
   versions: { drafts: { autosave: { interval: 300 } } },
+  hooks: {
+    afterChange: [revalidateCmsAfterChange],
+    afterDelete: [revalidateCmsAfterDelete],
+  },
   access: {
     read: publishedOnly,
     create: isContentEditor,

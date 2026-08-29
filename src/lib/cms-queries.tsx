@@ -11,7 +11,7 @@ function tagCollection(collection: string, locale: Locale) {
 export async function fetchExpertises(locale: Locale, primaryOnly = false) {
   'use cache'
   tagCollection('expertises', locale)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   return payload.find({
@@ -32,7 +32,7 @@ export async function fetchExpertises(locale: Locale, primaryOnly = false) {
 export async function fetchProjects(locale: Locale, limit = 12, featured?: boolean) {
   'use cache'
   tagCollection('projects', locale)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   return payload.find({
@@ -61,7 +61,7 @@ export type ProjectMapPoint = {
 export async function fetchProjectMapPoints(locale: Locale, limit = 100): Promise<ProjectMapPoint[]> {
   'use cache'
   tagCollection('projects-map', locale)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
@@ -94,7 +94,7 @@ export async function fetchClientsPartners(
   'use cache'
   const { featuredOnly = true, limit = 24 } = options
   tagCollection('clients-partners', locale)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   return payload.find({
@@ -116,7 +116,7 @@ export async function fetchExpertiseBySlug(slug: string, locale: Locale) {
   'use cache'
   tagCollection('expertises', locale)
   cacheTag('cms', `cms-expertise-${slug}-${locale}`)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   const result = await payload.find({
@@ -134,7 +134,7 @@ export async function fetchProjectBySlug(slug: string, locale: Locale) {
   'use cache'
   tagCollection('projects', locale)
   cacheTag('cms', `cms-project-${slug}-${locale}`)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   const result = await payload.find({
@@ -157,7 +157,7 @@ export async function fetchRelatedProjectsForProject(
   'use cache'
   tagCollection('projects', locale)
   cacheTag('cms', `cms-project-related-${projectId}-${locale}`)
-  cacheLife('hours')
+  cacheLife('days')
 
   if (!expertiseIds.length) return []
 
@@ -183,7 +183,7 @@ export async function fetchRelatedProjectsForProject(
 export async function fetchEquipment(locale: Locale) {
   'use cache'
   tagCollection('equipment', locale)
-  cacheLife('hours')
+  cacheLife('days')
 
   const payload = await getPayloadClient()
   return payload.find({

@@ -1,10 +1,7 @@
-import { fetchProjects } from '@/lib/cms-queries'
+import { generateProjectSlugStaticParams } from '@/lib/page-static-params'
 
 export async function generateStaticParams() {
-  const { docs } = await fetchProjects('en', 100)
-  return docs
-    .filter((doc) => doc.slug)
-    .map((doc) => ({ locale: 'en', slug: doc.slug! }))
+  return generateProjectSlugStaticParams('en')
 }
 
 export { generateMetadata, default } from '../../realisations/[slug]/page'

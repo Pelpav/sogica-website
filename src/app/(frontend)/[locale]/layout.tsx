@@ -1,18 +1,21 @@
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
-import { SiteHeader, SiteHeaderView } from '@/components/layout/SiteHeader'
-import { SiteFooter } from '@/components/layout/SiteFooter'
+import { SiteHeaderView } from '@/components/layout/SiteHeader'
 import { InstantNavigation } from '@/components/theme/InstantNavigation'
 import { RouteProgressBar } from '@/components/theme/RouteProgressBar'
 import { SitePreloader } from '@/components/theme/SitePreloader'
 import { RefreshRouteOnSave } from '@/components/cms/RefreshRouteOnSave'
-import { OrganizationJsonLd } from '@/components/seo/OrganizationJsonLd'
-import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { PageTransitionShell } from '@/components/theme/PageTransitionShell'
-import { getGlobal } from '@/lib/payload'
-import { localizedPath, isLocale, locales, type Locale } from '@/lib/i18n'
+import {
+  LocaleFooterSlot,
+  LocaleHeaderFallback,
+  LocaleHeaderSlot,
+  LocaleJsonLdSlot,
+  LocaleThemeSlot,
+  resolveLayoutLocale,
+} from '@/components/layout/locale-layout-slots'
+import { localizedPath, locales } from '@/lib/i18n'
 import { getMetadataBase, SITE_NAME } from '@/lib/seo'
 import { SITE_AUTHOR } from '@/lib/site-credits'
 import { Barlow_Condensed, Source_Sans_3 } from 'next/font/google'
@@ -70,18 +73,8 @@ function LocaleLayoutFallback({ children }: { children: ReactNode }) {
   )
 }
 
-async function LocaleLayoutContent({ children, params }: LayoutProps) {
-  const { locale } = await params
-  if (!isLocale(locale)) notFound()
-
-  const [theme, header, footer, site] = await Promise.all([
-    getGlobal('theme-settings', locale),
-    getGlobal('header', locale),
-    getGlobal('footer', locale),
-    getGlobal('site-settings', locale),
-  ])
-
-  const typedLocale = locale as Locale
+async function LocaleLayoutShell({ children, params }: LayoutProps) {
+  const locale = await resolveLayoutLocale(params)
 
   return (
     <html lang={locale} className={fontClasses} data-scroll-behavior="smooth">
@@ -94,27 +87,24 @@ async function LocaleLayoutContent({ children, params }: LayoutProps) {
         </Suspense>
         <SitePreloader />
         <RefreshRouteOnSave />
-        <OrganizationJsonLd locale={typedLocale} />
-        <ThemeProvider theme={theme} />
+        <Suspense fallback={null}>
+          <LocaleJsonLdSlot params={params} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LocaleThemeSlot params={params} />
+        </Suspense>
         <a href="#main" className="skip-link">
           {locale === 'fr' ? 'Aller au contenu' : 'Skip to content'}
         </a>
-        <Suspense
-          fallback={
-            <SiteHeaderView
-              locale={typedLocale}
-              header={header}
-              site={site}
-              pathname={localizedPath(typedLocale)}
-            />
-          }
-        >
-          <SiteHeader locale={typedLocale} header={header} site={site} />
+        <Suspense fallback={<LocaleHeaderFallback locale={locale} />}>
+          <LocaleHeaderSlot params={params} />
         </Suspense>
         <main id="main" className="site-main">
           <PageTransitionShell>{children}</PageTransitionShell>
         </main>
-        <SiteFooter locale={typedLocale} footer={footer} header={header} site={site} />
+        <Suspense fallback={null}>
+          <LocaleFooterSlot params={params} />
+        </Suspense>
       </body>
     </html>
   )
@@ -123,7 +113,7 @@ async function LocaleLayoutContent({ children, params }: LayoutProps) {
 export default function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <Suspense fallback={<LocaleLayoutFallback>{children}</LocaleLayoutFallback>}>
-      <LocaleLayoutContent params={params}>{children}</LocaleLayoutContent>
+      <LocaleLayoutShell params={params}>{children}</LocaleLayoutShell>
     </Suspense>
   )
 }

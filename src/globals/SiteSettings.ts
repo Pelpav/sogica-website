@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { isAdmin, isOwnerOrAdmin, publicRead } from '../access/roles'
+import { revalidateCmsGlobalAfterChange } from '../hooks/revalidate-cms'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -9,6 +10,9 @@ export const SiteSettings: GlobalConfig = {
     description: 'Nom, adresse, téléphones, e-mails et référencement par défaut.',
   },
   access: { read: publicRead, update: isOwnerOrAdmin },
+  hooks: {
+    afterChange: [revalidateCmsGlobalAfterChange],
+  },
   fields: [
     {
       name: 'companyName',
@@ -94,6 +98,9 @@ export const LegalSettings: GlobalConfig = {
     description: 'Textes juridiques affichés sur le site.',
   },
   access: { read: publicRead, update: isAdmin },
+  hooks: {
+    afterChange: [revalidateCmsGlobalAfterChange],
+  },
   fields: [
     { name: 'registrationNumber', type: 'text', label: 'Registre du Commerce' },
     { name: 'taxNumber', type: 'text', label: 'NIF' },
