@@ -2,6 +2,7 @@ import type { Payload } from 'payload'
 import { cacheLife, cacheTag } from 'next/cache'
 import type { Expertise, Media } from '@/payload-types'
 import { getPayloadClient } from './payload'
+import { isRejectedPhotoFilename } from './media-curation'
 
 const EXPERTISE_COVER_SLUGS = [
   'genie-civil',
@@ -19,7 +20,12 @@ export function isLogoMedia(media: Pick<Media, 'filename' | 'alt'> | null | unde
 }
 
 export function filterPhotoMedia(docs: Media[]): Media[] {
-  return docs.filter((doc) => doc.mediaType === 'image' && !isLogoMedia(doc))
+  return docs.filter(
+    (doc) =>
+      doc.mediaType === 'image' &&
+      !isLogoMedia(doc) &&
+      !isRejectedPhotoFilename(doc.filename),
+  )
 }
 
 export async function pickHeroMediaId(payload: Payload): Promise<string | number | null> {
